@@ -1,4 +1,4 @@
-import userManager from "../dao/mongoManagers/UserManager.js";
+import userManager from "../dal/dao/mongoManagers/UserManager.js";
 import { generateToken, hashData, compareData } from "../utils.js";
 
 export const registerUserController = async ( req, res ) => {

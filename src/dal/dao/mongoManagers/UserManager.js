@@ -22,7 +22,7 @@ class UserManager {
 
     async updateOne(idUser, idCart){
         try {
-            const updateUser = await userModel.updateOne({_id:idUser},{$set:{cart:idCart}})
+            const updateUser = await usersModel.updateOne({_id:idUser},{$set:{cart:idCart}})
             return updateUser
         } catch (error) {
             return error

@@ -1,5 +1,5 @@
 import express from 'express'
-import cartManager from './dao/mongoManagers/CartManager.js'
+import cartManager from './dal/dao/mongoManagers/CartManager.js'
 import handlebars from 'express-handlebars'
 import {__dirname} from './utils.js'
 import {Server} from "socket.io"
@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import FileStore from 'session-file-store'
 import MongoStore from 'connect-mongo'
-import './db/dbConfig.js'
+import './dal/db/dbConfig.js'
 import mongoose from 'mongoose'
 import passport from 'passport'
 import './passport/passportStrategies.js'
@@ -20,6 +20,7 @@ import productsViewRouter from './routes/productsView.router.js'
 import viewsRouter from './routes/views.router.js'
 import cartViewRouter from './routes/cartView.router.js'
 import sessionRouter from './routes/sessions.router.js'
+import chatRouter from './routes/chat.router.js'
 
 
 const app = express()
@@ -71,6 +72,7 @@ app.use("/api/views", viewsRouter)
 app.use("/api/session", sessionRouter)
 app.use("/carts", cartViewRouter)
 app.use("/products", productsViewRouter)
+app.use("/chat", chatRouter)
 
 
 const PORT = config.PORT

@@ -1,6 +1,8 @@
-import { cartsModel } from "../../db/models/carts.models.js"
+import { cartsModel } from "../dal/db/models/carts.models.js";
+import { ticketsModel } from "../dal/db/models/ticket.models.js";
+import productManager from "../dal/dao/mongoManagers/ProductManager.js";
 
-class CartManager {
+class CartsRepository {
 
     async getCarts() {
         try {
@@ -10,7 +12,7 @@ class CartManager {
             return error
         }
     }
-
+    
     async getCartsById(id) {
         try {
             const cart = await cartsModel.findById(id).populate('products')
@@ -29,7 +31,7 @@ class CartManager {
             return error
         }
     }
-    
+
     async addProductToCart(cid, pid) {
         try {
           const cartById = await cartsModel.findById(cid)
@@ -56,7 +58,7 @@ class CartManager {
           return error
         }
     }
-  
+
     async deleteCart(cid) {
         try {
             const cart = await cartsModel.findById(cid)
@@ -116,7 +118,20 @@ class CartManager {
         }
     }
 
+    async purchaseCart ( cid ) {
+        try {
+            const cart = await cartsModel.findById(cid)
+            let total = 0
+            let cartPorducts = cart.products
+            let productsBought = []
+            let productsNotBought = []
+
+        } catch (error) {
+            return error
+        }
+    }
+
 }
 
-const cartManager = new CartManager()
-export default cartManager
+const cartsRepository = new CartsRepository()
+export default cartsRepository

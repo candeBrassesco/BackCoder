@@ -1,5 +1,5 @@
 import passport from "passport";
-import { usersModel } from "../db/models/users.models.js";
+import { usersModel } from "../dal/db/models/users.models.js";
 import { Strategy as LocalStrategy } from "passport-local"
 import { Strategy as GithubStrategy } from "passport-github2";
 import { ExtractJwt, Strategy as JWTStrategy } from "passport-jwt"
