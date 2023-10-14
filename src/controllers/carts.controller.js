@@ -87,7 +87,18 @@ export const viewCartControler = async ( req, res ) => {
         const cartProducts = cart.products
         res.render("cart", {products: cartProducts})
     } catch (error) {
-        return error
+        res.status(500).json({error})
+    }
+}
+
+export const purchaseCartController = async ( req, res ) => {
+    const {cid} = req.params
+    const {user} = req
+    try {
+        const purchase = await cartManager.purchaseCart(cid, user)
+        res.status(200).json({message: 'Products bought', purchase})
+    } catch (error) {
+        res.status(500).json({error})
     }
 }
 

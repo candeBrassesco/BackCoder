@@ -70,7 +70,7 @@ class ProductsRepository {
         }
     }
 
-    async updateProductsStock ( id, stock ) {
+    async updateProductStock ( id, stock ) {
         const result = await productsModel.findOneAndUpdate(
             { _id: id },
             { stock: stock },

@@ -47,9 +47,9 @@ class ProductManager {
         }
     }
 
-    async updateProductsStock ( id, stock ) {
+    async updateProductStock ( id, stock ) {
         try{
-            const updateStock = await productsRepository.updateProductsStock( id, stock )
+            const updateStock = await productsRepository.updateProductStock( id, stock )
             return updateStock
         } catch (error) {
             return error

@@ -122,15 +122,43 @@ class CartsRepository {
         try {
             const cart = await cartsModel.findById(cid)
             let total = 0
-            let cartPorducts = cart.products
+            let cartProducts = cart.products
             let productsBought = []
             let productsNotBought = []
-
+            for (let i = 0; i < cartProducts.length; i++ ) {
+                const product = cartProducts[i]
+                const dbProduct = await productManager.getProductById(product._id)
+                if (product.quantity <= dbProduct.stock ) {
+                    let totalPrice = product.quantity * dbProduct
+                    total += totalPrice
+                    const newStock = dbProduct.stock - product.quantity
+                    await productManager.updateProductStock(dbProduct._id, newStock)
+                    productsBought.push({
+                        _id: dbProduct._id,
+                        quantity: product.quantity,
+                        price: dbProduct.price
+                    })
+                } else {
+                    productsNotBought.push ({
+                        _id: dbProduct._id,
+                        quantity: product.quantity,
+                        stock: dbProduct.stock
+                    })
+                }
+            }
+            if (productsNotBought.length > 0) {
+                throw new Error (`Product out of stock`)
+            } else {
+                const ticket = await ticketsModel.create ({purchaser: user.email, amount: total})
+                return {
+                    productsBought,
+                    ticket
+                }
+            }
         } catch (error) {
             return error
         }
     }
-
 }
 
 const cartsRepository = new CartsRepository()

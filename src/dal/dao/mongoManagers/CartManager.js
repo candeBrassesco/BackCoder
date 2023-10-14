@@ -75,6 +75,15 @@ class CartManager {
         }
     }
 
+    async purchaseCart (cid, user) {
+        try {
+            const response = await cartsRepository.purchaseCart(cid, user)
+            return response
+        } catch (error) {
+            return error
+        }
+    }
+
 }
 
 const cartManager = new CartManager()
