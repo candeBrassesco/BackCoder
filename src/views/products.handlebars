@@ -1,8 +1,8 @@
-<h3>¡Welcome {{name}}!</h3>
+<h3>¡Welcome {{user.first_name}}!</h3>
 <a href="/api/session/logout"><button>Log out</button></a>
 
 {{#each products}}
-<form id="prodForm">
+<form id="prodForm" action="/api/cart/{{cartId}}/{{id}}" method="POST">
     <h3> {{title}}</h3>
     <p>description: {{description}}</p>
     <p>price: {{price}}</p>

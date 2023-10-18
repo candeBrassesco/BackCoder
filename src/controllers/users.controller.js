@@ -1,5 +1,5 @@
 import userManager from "../dal/dao/mongoManagers/UserManager.js";
-import { generateToken, hashData, compareData } from "../utils.js";
+import { generateToken, compareData } from "../utils.js";
 
 export const registerUserController = async ( req, res ) => {
     const { first_name, last_name, email, age, password } = req.body
@@ -10,15 +10,7 @@ export const registerUserController = async ( req, res ) => {
     if(userExists) {
         return res.redirect("/api/views/registerError")
     }
-    const hashPassword = await hashData(password)
-    const user = {
-        first_name, 
-        last_name, 
-        email, 
-        age, 
-        password: hashPassword
-    }
-    const newUser = await userManager.createUser(user)
+    const newUser = await userManager.createUser(req.body)
     const token = generateToken(newUser)
     res.cookie("token", token)
     if (newUser) {
@@ -31,6 +23,7 @@ export const registerUserController = async ( req, res ) => {
 export const logoutUserController = async ( req, res ) => {
     req.session.destroy(error =>{
         if (error) return res.status(500).json({message: "Error login out"})
+        res.clearCookie("token");
         res.redirect('/api/views/login')
     })
 }
@@ -54,13 +47,11 @@ export const loginUserController = async ( req, res ) => {
         return res.redirect("/api/views/loginError")
     }
 
-    const role = user.email.includes("admin") ? "admin" : "user"
-
     req.session.user = {
         name: `${user.first_name} ${user.last_name} `,
         email: `${user.email}`,
         age: `${user.age}`,
-        role
+        role: `${user.role}`
     }
 
     res.redirect('/products')

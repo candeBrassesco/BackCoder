@@ -1,6 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
 import { loginUserController, logoutUserController, registerUserController } from "../controllers/users.controller.js";
+import SessionDTO from "../dal/dto/sessions.dto.js";
 
 const router = Router()
 
@@ -19,7 +20,8 @@ router.get('/github', passport.authenticate("github", {failureRedirect:'/api/vie
 router.get('/logout', logoutUserController)
 
 router.get("/current", passport.authenticate("jwt", {session:false}), (req, res)=>{
-    res.send(req.user)
+    const userDTO = new SessionDTO(req.user)
+    res.send(userDTO)
 })
 
 

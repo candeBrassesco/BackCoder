@@ -1,10 +1,10 @@
-import { usersModel } from "../../db/models/users.models.js"
+import usersRepository from "../../../repositories/users.repository.js"
 
 class UserManager {
 
     async createUser(user) {
        try {
-          const newUser = await usersModel.create(user)
+          const newUser = await usersRepository.createUser(user)
           return newUser
        } catch (error) {
           return error
@@ -13,7 +13,7 @@ class UserManager {
 
     async findUser(email) {
         try {
-            const user = await usersModel.findOne({email})
+            const user = await usersRepository.findUser(email)
             return user
         } catch (error) {
             return error
@@ -22,8 +22,17 @@ class UserManager {
 
     async updateOne(idUser, idCart){
         try {
-            const updateUser = await usersModel.updateOne({_id:idUser},{$set:{cart:idCart}})
+            const updateUser = await usersRepository(idUser, idCart)
             return updateUser
+        } catch (error) {
+            return error
+        }
+    }
+
+    async findUsersCart (email) {
+        try {
+            const usersCart = await usersRepository(email)
+            return usersCart
         } catch (error) {
             return error
         }

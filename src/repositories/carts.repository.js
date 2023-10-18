@@ -6,7 +6,7 @@ class CartsRepository {
 
     async getCarts() {
         try {
-            const carts = await cartsModel.find({})
+            const carts = await cartsModel.find({}).populate('products.pid')
             return carts
         } catch (error){
             return error
@@ -15,8 +15,9 @@ class CartsRepository {
     
     async getCartsById(id) {
         try {
-            const cart = await cartsModel.findById(id).populate('products')
-            console.log(cart) //test
+            const cart = await cartsModel.findById(id).populate('products.').lean()
+            const cartProducts = cart.products
+            console.log(cartProducts.title)
             return cart
         } catch (error) {
             return error

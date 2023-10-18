@@ -5,5 +5,6 @@ dotenv.config();
 export default {
     PORT: process.env.PORT,
     MONGO_URL: process.env.MONGO_URL,
-    JWT_SECRET_KEY: process.env.JWT_SECRET_KEY
+    JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD
 }

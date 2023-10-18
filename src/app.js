@@ -82,15 +82,4 @@ const httpServer = app.listen(PORT, () => {
 })
 
 
-const socketServer = new Server(httpServer)
-
-socketServer.on('connection', (socket) => {
-    console.log(`User connected: ${socket.id}`)
-    socket.on("prodToCart", async product => {
-        const addProduct = await cartManager.addProductToCart("64f8b03e9847f17bd96750e1", product.id)
-        return addProduct
-    })
-    socket.on("disconnect", () => {
-        console.log("Client disconnected")
-    })  
-})
+export const socketServer = new Server(httpServer)

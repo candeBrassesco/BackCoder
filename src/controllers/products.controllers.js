@@ -1,4 +1,5 @@
 import productManager from "../dal/dao/mongoManagers/ProductManager.js";
+import userManager from "../dal/dao/mongoManagers/UserManager.js";
 
 export const getProductsController = async ( req, res ) => {
     try {
@@ -62,8 +63,12 @@ export const updateProductController = async ( req, res ) => {
 }
 
 export const viewProductsController = async ( req, res ) => {
+    const {user} = req.session
     const {limit = 10, page = 1, sort, ...query } = req.query
     const products = await productManager.getProducts(limit, page, sort, query)
-    const {user} = req.session
-    res.render("products", {products: products.payload, name: user.name})
+    const userLogued = await userManager.findUser(user.email)
+    const productsList = products.payload.map( product => {
+        return {...product, cartId: userLogued.cart}
+    })
+    res.render("products", {products: productsList, user: userLogued.toObject()})
 }
