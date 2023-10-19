@@ -7,12 +7,12 @@ const usersSchema = new mongoose.Schema({
     },
     last_name: {
         type: String,
-        required:true
+        required: true
     },
     email: {
         type: String,
         unique: true,
-        required:true
+        required: true
     },
     age: {
         type: Number,

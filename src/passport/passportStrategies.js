@@ -1,11 +1,13 @@
 import passport from "passport";
 import { usersModel } from "../dal/db/models/users.models.js";
+import { cartsModel } from "../dal/db/models/carts.models.js";
 import { Strategy as LocalStrategy } from "passport-local"
 import { Strategy as GithubStrategy } from "passport-github2";
 import { ExtractJwt, Strategy as JWTStrategy } from "passport-jwt"
 import { compareData, cookieExtractor } from "../utils.js";
 import { hashData } from "../utils.js";
 import config from "../config.js";
+
 
 const JWT_SECRET_KEY = config.JWT_SECRET_KEY
 
@@ -56,14 +58,28 @@ passport.use(new GithubStrategy({
         if (user) {
             done(null, false)
         }
+        if (profile._json.email === 'adminCoder@coder.com') {
+            const newUser = {
+                first_name: profile._json.name.split(' ')[0],
+                last_name: profile._json.name.split(' ')[1] || ' ',
+                email: profile._json.email,
+                password: ' ',
+                role: 'admin'
+            }
+            const userDB = await usersModel.create(newUser)
+            done(null, userDB)
+        }
+        const usersCart = await cartsModel.create({})
         const newUser = {
             first_name: profile._json.name.split(' ')[0],
             last_name: profile._json.name.split(' ')[1] || ' ',
             email: profile._json.email,
-            password: ' '
+            password: ' ',
+            cart: usersCart
         }
         const userDB = await usersModel.create(newUser)
         done(null, userDB)
+        
     } catch (error) {
         done(error)
     }

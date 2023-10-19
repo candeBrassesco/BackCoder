@@ -2,7 +2,7 @@
 <a href="/api/session/logout"><button>Log out</button></a>
 
 {{#each products}}
-<form id="prodForm" action="/api/cart/{{cartId}}/{{id}}" method="POST">
+<form id="prodForm" action="/api/cart/{{cartId}}/product/{{id}}" method="POST">
     <h3> {{title}}</h3>
     <p>description: {{description}}</p>
     <p>price: {{price}}</p>

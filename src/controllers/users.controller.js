@@ -2,8 +2,8 @@ import userManager from "../dal/dao/mongoManagers/UserManager.js";
 import { generateToken, compareData } from "../utils.js";
 
 export const registerUserController = async ( req, res ) => {
-    const { first_name, last_name, email, age, password } = req.body
-    if(!first_name || !last_name || !email || !age || !password) {
+    const { first_name, last_name, email, password, age } = req.body
+    if(!first_name || !last_name || !email || !password || !age) {
         return res.status(400).json({message:'Some data is missing!'})
     }
     const userExists = await userManager.findUser(email)

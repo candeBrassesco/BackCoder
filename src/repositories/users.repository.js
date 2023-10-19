@@ -7,11 +7,13 @@ class UsersRepository {
 
     async createUser(user) {
         try {
-            const { email, password } = user
-            const userExists = await usersModel.findOne({email})
-            if(!userExists & email !== "adminCoder@coder.com") {
-                const hashPassword =  await hashData(password)
-                usersCart =  await cartManager.addCart()
+            const userExists = await usersModel.findOne(user.email)
+            if(userExists) {
+                throw new Error('The user already exists')
+            } 
+            if (user.email !== "adminCoder@coder.com") {
+                const hashPassword = await hashData(user.password)
+                usersCart = await cartManager.addCart()
                 const newUser = {
                     ...user,
                     password: hashPassword,
@@ -19,34 +21,33 @@ class UsersRepository {
                 }
                 const userDB = await usersModel.create(newUser)
                 return userDB
+            } 
+            const hashPassword = hashData(password)
+            const newUserAd = {
+                ...user,
+                password: hashPassword,
+                ole: "admin"
             }
-            if(!userExists & email === "adminCoder@coder.com" & password === config.ADMIN_PASSWORD) {
-                const hashPassword = hashData(password)
-                const newUserAd = {
-                    ...user,
-                    password: hashPassword,
-                    role: "admin"
-                }
-                const userDB = await usersModel.create(newUserAd)
-                return userDB
-            }
+            const userDB = await usersModel.create(newUserAd)
+            return userDB
+            
         } catch (error) {
             return error
         }
     }
 
-    async findUser (email) {
+    async findUser(email) {
         try {
-            const user = await usersModel.findOne({email})
+            const user = await usersModel.findOne({ email })
             return user
         } catch (error) {
             return error
         }
     }
 
-    async updateOne (idUser, idCart) {
+    async updateOne(idUser, idCart) {
         try {
-            const updateUser = await usersModel.updateOne({_id:idUser},{$set:{cart:idCart}})
+            const updateUser = await usersModel.updateOne({ _id: idUser }, { $set: { cart: idCart } })
             return updateUser
         } catch (error) {
             return error
@@ -55,7 +56,7 @@ class UsersRepository {
 
     async findUsersCart(email) {
         try {
-            const user = await usersModel.findOne({email})
+            const user = await usersModel.findOne({ email })
             return user.cart
         } catch (error) {
             return error

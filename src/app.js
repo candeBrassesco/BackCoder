@@ -1,5 +1,4 @@
 import express from 'express'
-import cartManager from './dal/dao/mongoManagers/CartManager.js'
 import handlebars from 'express-handlebars'
 import {__dirname} from './utils.js'
 import {Server} from "socket.io"
@@ -41,7 +40,7 @@ app.set('view engine', 'handlebars');
 app.set('views', __dirname+'/views');
 
 //cookies
-app.use(cookieParser('secretCookies'))
+app.use(cookieParser(config.SECRET_COOKIES))
 
 //sessions Mongo
 const connection = mongoose.connect(config.MONGO_URL)
@@ -54,7 +53,7 @@ app.use(
         mongoUrl: config.MONGO_URL,
         ttl: 3600
     }),
-    secret: 'SecretMongo',
+    secret: config.SECRET_MONGO,
     resave: false,
     saveUninitialized: false
 }))

@@ -22,7 +22,7 @@ class UserManager {
 
     async updateOne(idUser, idCart){
         try {
-            const updateUser = await usersRepository(idUser, idCart)
+            const updateUser = await usersRepository.updateOne(idUser, idCart)
             return updateUser
         } catch (error) {
             return error
@@ -31,7 +31,7 @@ class UserManager {
 
     async findUsersCart (email) {
         try {
-            const usersCart = await usersRepository(email)
+            const usersCart = await usersRepository.findUsersCart(email)
             return usersCart
         } catch (error) {
             return error
