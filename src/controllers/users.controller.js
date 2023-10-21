@@ -1,19 +1,19 @@
 import userManager from "../dal/dao/mongoManagers/UserManager.js";
-import { generateToken, compareData } from "../utils.js";
+import { generateToken, compareData, hashData } from "../utils.js";
 
 export const registerUserController = async ( req, res ) => {
     const { first_name, last_name, email, password, age } = req.body
-    if(!first_name || !last_name || !email || !password || !age) {
+    if (!first_name || !last_name || !email || !password || !age) {
         return res.status(400).json({message:'Some data is missing!'})
     }
     const userExists = await userManager.findUser(email)
-    if(userExists) {
+    if (userExists) {
         return res.redirect("/api/views/registerError")
     }
-    const newUser = await userManager.createUser(req.body)
-    const token = generateToken(newUser)
+    const userDB = await userManager.createUser(req.body)
+    const token = generateToken(userDB)
     res.cookie("token", token)
-    if (newUser) {
+    if (userDB) {
         res.redirect("/api/views/login")
     } else {
         res.redirect("/views/registerError")
@@ -45,13 +45,6 @@ export const loginUserController = async ( req, res ) => {
   
     if(!isPasswordValid){
         return res.redirect("/api/views/loginError")
-    }
-
-    req.session.user = {
-        name: `${user.first_name} ${user.last_name} `,
-        email: `${user.email}`,
-        age: `${user.age}`,
-        role: `${user.role}`
     }
 
     res.redirect('/products')

@@ -1,8 +1,8 @@
-<h2>ROUTES:<h2>
+ROUTES:
 
-<p>user register: localhost:8080/api/views/register<p>
+user register: localhost:8080/api/views/register
 
-<p>user login: localhost:8080/api/views/login<p>
+user login: localhost:8080/api/views/login
 
 Admin user: 
 email: adminCoder@coder.com

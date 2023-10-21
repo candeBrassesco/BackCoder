@@ -1,11 +1,13 @@
 import usersRepository from "../../../repositories/users.repository.js"
+import { usersModel } from "../../db/models/users.models.js"
 
 class UserManager {
 
     async createUser(user) {
        try {
           const newUser = await usersRepository.createUser(user)
-          return newUser
+          const userDB = await usersModel.create(newUser)
+          return userDB
        } catch (error) {
           return error
        }

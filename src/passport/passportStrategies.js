@@ -13,7 +13,11 @@ const JWT_SECRET_KEY = config.JWT_SECRET_KEY
 
 // local strategy
 
-passport.use('login', new LocalStrategy(
+passport.use('login', new LocalStrategy({
+    usernameField: "email",
+    passwordField: "password",
+    passReqToCallback: true
+},
     async (req, email, password, done) => {
     try {
         const user = await usersModel.findOne({ email })
