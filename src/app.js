@@ -20,6 +20,7 @@ import viewsRouter from './routes/views.router.js'
 import cartViewRouter from './routes/cartView.router.js'
 import sessionRouter from './routes/sessions.router.js'
 import chatRouter from './routes/chat.router.js'
+import mockRouter from './routes/mock.router.js'
 
 
 const app = express()
@@ -65,6 +66,7 @@ app.use(passport.session()) // trabaja con sessions
 // routes
 app.use("/api/products", productsRouter)
 app.use("/api/cart", cartRouter)
+app.use("/mockingproducts", mockRouter)
 
 // handlebars routes
 app.use("/api/views", viewsRouter)
