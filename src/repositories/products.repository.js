@@ -1,4 +1,6 @@
 import { productsModel } from "../dal/db/models/products.models.js";
+import CostumError from "../errors/CostumError.js";
+import { ErrorName, ErrorMessage } from "../errors/error.enum.js";
 
 class ProductsRepository {
 
@@ -14,6 +16,12 @@ class ProductsRepository {
                 query,
                 options
             )
+            if (!result || !options) {
+                CostumError.createError({
+                    name: ErrorName.PRODUCT_DATA_INCOMPLETE,
+                    message: ErrorMessage.PRODUCT_DATA_INCOMPLETE
+                })
+            }
             const info = {
                 status: "success",
                 payload: result.docs,
@@ -46,6 +54,12 @@ class ProductsRepository {
     async findProductById(id) {
         try {
             const product = await productsModel.findById(id)
+            if(!product) {
+                CostumError.createError({
+                    name: ErrorName.PRODUCT_DATA_INCOMPLETE,
+                    message: ErrorMessage.FIND_DATA_INCOMPLETE
+                })
+            }
             return product
         } catch (error) {
             return error
@@ -54,6 +68,13 @@ class ProductsRepository {
 
     async deleteProduct(id) {
         try {
+            const productExist = await productsModel.findById(id)
+            if (!productExist) {
+                CostumError.createError({
+                    name: ErrorName.DELETE_DATA_INCOMPLETE,
+                    message: ErrorMessage.FIND_DATA_INCOMPLETE
+                })
+            }
             const deleteProduct = await productsModel.findByIdAndDelete(id)
             return deleteProduct
         } catch (error) {
@@ -63,6 +84,13 @@ class ProductsRepository {
 
     async updateProduct( id, obj ) {
         try {
+            const productExist = await productsModel.findById(id)
+            if (!productExist) {
+                CostumError.createError({
+                    name: ErrorName.PRODUCTUPD_DATA_INCOMPLETE,
+                    message: ErrorMessage.FIND_DATA_INCOMPLETE
+                })
+            }
             const productUpdate = await productsModel.updateOne( { _id: id }, { ...obj } )
             return productUpdate
         } catch (error) {
@@ -71,12 +99,19 @@ class ProductsRepository {
     }
 
     async updateProductStock ( id, stock ) {
+        const productExist = await productsModel.findById(id)
+        if (!productExist || !stock) {
+            CostumError.createError({
+                name: ErrorName.PRODUCTUPD_DATA_INCOMPLETE,
+                message: ErrorMessage.PRODUCTUPDSTOCK_DATA_INCOMPLETE
+            })
+        }
         const result = await productsModel.findOneAndUpdate(
             { _id: id },
             { stock: stock },
             { new: true }
             )
-            return result
+        return result
     }
 }
 

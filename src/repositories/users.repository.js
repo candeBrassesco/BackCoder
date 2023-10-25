@@ -1,6 +1,8 @@
 import cartManager from "../dal/dao/mongoManagers/CartManager.js";
+import CostumError from "../errors/CostumError.js";
 import { usersModel } from "../dal/db/models/users.models.js";
 import { hashData } from "../utils.js";
+import { ErrorMessage, ErrorName } from "../errors/error.enum.js";
 
 
 class UsersRepository {
@@ -10,7 +12,10 @@ class UsersRepository {
            const { email, password } = user
            const userExists = await usersModel.findOne({email})
            if (userExists) {
-              throw new Error ('The user already exists')
+             CostumError.createError({
+                name: ErrorName.REGISTER_DATA_INCOMPLETE,
+                message: ErrorMessage.REGISTER_DATA_INCOMPLETE
+             })
            }
            if (email === 'adminCoder@coder.com') {
             const hashPassword = await hashData(password)
@@ -37,6 +42,12 @@ class UsersRepository {
     async findUser(email) {
         try {
             const user = await usersModel.findOne({ email })
+            if(!user) {
+                CostumError.createError({
+                    name: ErrorName.USER_DATA_INCOMPLETE,
+                    message: ErrorMessage.USER_DATA_INCOMPLETE
+                })
+            }
             return user
         } catch (error) {
             return error
@@ -45,6 +56,14 @@ class UsersRepository {
 
     async updateOne(idUser, idCart) {
         try {
+            const userExists = await usersModel.findById(idUser)
+            const cartExists = await cartManager.findById(idCart)
+            if (!userExists || !cartExists) {
+                CostumError.createError({
+                    name: ErrorName.CARTUPD_DATA_INCOMPLETE,
+                    message: ErrorMessage.USERCART_DATA_INCOMPLETE
+                })
+            }
             const updateUser = await usersModel.updateOne({ _id: idUser }, { $set: { cart: idCart } })
             return updateUser
         } catch (error) {
@@ -55,6 +74,12 @@ class UsersRepository {
     async findUsersCart(email) {
         try {
             const user = await usersModel.findOne({ email })
+            if (!user) {
+                CostumError.createUser({
+                    name: ErrorName.USER_DATA_INCOMPLETE,
+                    message: ErrorMessage.FIND_DATA_INCOMPLETE
+                })
+            }
             return user.cart
         } catch (error) {
             return error
