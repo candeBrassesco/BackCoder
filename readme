@@ -8,4 +8,6 @@ Admin user:
 email: adminCoder@coder.com
 password: adminCoder123
 
+logger test: localhost:8080/loggerTest 
+
 

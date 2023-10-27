@@ -21,6 +21,7 @@ import cartViewRouter from './routes/cartView.router.js'
 import sessionRouter from './routes/sessions.router.js'
 import chatRouter from './routes/chat.router.js'
 import mockRouter from './routes/mock.router.js'
+import loggerRouter from './routes/loggerTest.router.js'
 
 
 const app = express()
@@ -74,6 +75,7 @@ app.use("/api/session", sessionRouter)
 app.use("/carts", cartViewRouter)
 app.use("/products", productsViewRouter)
 app.use("/chat", chatRouter)
+app.use("/loggerTest", loggerRouter)
 
 
 const PORT = config.PORT
