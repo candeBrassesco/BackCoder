@@ -3,6 +3,7 @@ import CostumError from "../errors/CostumError.js";
 import { usersModel } from "../dal/db/models/users.models.js";
 import { hashData } from "../utils.js";
 import { ErrorMessage, ErrorName } from "../errors/error.enum.js";
+import logger from "../winston.js";
 
 
 class UsersRepository {
@@ -24,6 +25,7 @@ class UsersRepository {
                 password: hashPassword,
                 role:'admin'
             }
+            logger.warning(`Admin created: ${newUser.email}`)
             return newUser
            }
            const hashPassword = await hashData(password)
@@ -33,8 +35,10 @@ class UsersRepository {
                password: hashPassword,
                cart: usersCart
            }
+           logger.info(`User created: ${newUser.email}`)
            return newUser
         } catch (error) {
+            logger.error(error)
             return error
         }
     }
@@ -50,6 +54,7 @@ class UsersRepository {
             }
             return user
         } catch (error) {
+            logger.error(error)
             return error
         }
     }
@@ -67,6 +72,7 @@ class UsersRepository {
             const updateUser = await usersModel.updateOne({ _id: idUser }, { $set: { cart: idCart } })
             return updateUser
         } catch (error) {
+            logger.error(error)
             return error
         }
     }
@@ -82,6 +88,7 @@ class UsersRepository {
             }
             return user.cart
         } catch (error) {
+            logger.error(error)
             return error
         }
     }

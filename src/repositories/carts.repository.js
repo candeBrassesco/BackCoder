@@ -4,6 +4,7 @@ import { ErrorMessage, ErrorName } from "../errors/error.enum.js";
 import productManager from "../dal/dao/mongoManagers/ProductManager.js";
 import userManager from "../dal/dao/mongoManagers/UserManager.js"
 import CostumError from "../errors/CostumError.js";
+import logger from "../winston.js";
 
 
 class CartsRepository {
@@ -13,6 +14,7 @@ class CartsRepository {
             const carts = await cartsModel.find({}).populate('products.pid')
             return carts
         } catch (error) {
+            logger.error(error)
             return error
         }
     }
@@ -28,6 +30,7 @@ class CartsRepository {
             }
             return cart
         } catch (error) {
+            logger.error(error)
             return error
         }
     }
@@ -37,6 +40,7 @@ class CartsRepository {
             const newCart = await cartsModel.create({})
             return newCart
         } catch (error) {
+            logger.error(error)
             return error
         }
     }
@@ -81,6 +85,7 @@ class CartsRepository {
             cart.products = []
             return await cartsModel.updateOne({ _id: cid }, { $set: { products: cart.products } })
         } catch (error) {
+            logger.error(error)
             return error
         }
     }
@@ -98,7 +103,8 @@ class CartsRepository {
             const response = await cartsModel.updateOne({ _id: cid }, { $pull: { products: { pid: pid } } })
             return response
         } catch (error) {
-            return error
+            logger.error(error)
+            return error  
         }
     }
 

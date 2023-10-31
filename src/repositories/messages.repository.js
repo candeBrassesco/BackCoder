@@ -1,4 +1,5 @@
 import { messagesModel } from "../dal/db/models/messages.models.js";
+import logger from "../winston.js";
 
 class MessageRepository {
     
@@ -7,6 +8,7 @@ class MessageRepository {
             const messages = await messagesModel.find()
             return messages
         } catch (error) {
+            logger.error(error)
             return error
         }
     }
@@ -16,6 +18,7 @@ class MessageRepository {
             const newMessage = await messagesModel.create(message)
             return newMessage
         } catch (error) {
+            logger.error(error)
             return error
         }
     }

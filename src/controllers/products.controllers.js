@@ -64,7 +64,6 @@ export const updateProductController = async ( req, res ) => {
 
 export const viewProductsController = async ( req, res ) => {
     const {user} = req
-    console.log(user)
     const {limit = 10, page = 1, sort, ...query } = req.query
     const products = await productManager.getProducts(limit, page, sort, query)
     const userLogued = await userManager.findUser(user.email)

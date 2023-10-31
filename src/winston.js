@@ -11,16 +11,16 @@ const CostumLevels = {
         debug:4
     },
     colors: {
-        fatal:red,
-        error:red,
-        warning:yellow,
-        info:blue,
-        http:green,
-        debug:green
+        fatal:"red",
+        error:"red",
+        warning:"yellow",
+        info:"blue",
+        http:"green",
+        debug:"green"
     }
 }
 
-let logger = " "
+let logger;
 
 if(config.NODE_ENV === "production") {
     logger = winston.createLogger({
@@ -35,27 +35,27 @@ if(config.NODE_ENV === "production") {
             }),
             new winston.transports.File({
                 level: "error",
-                filename: "errors.log"
+                filename: "./errors.log"
+            })
+        ]
+    })
+} else {
+    logger = winston.createLogger({
+        transports: [
+            new winston.transports.Console({
+                level: "debug",
+                format: winston.format.combine(
+                    winston.format.colorize({colors: CostumLevels.colors}),
+                    winston.format.simple
+                )
+            }),
+    
+            new winston.transports.File({
+                level: "error",
+                filename: "./errors.log"
             })
         ]
     })
 }
-
-logger = winston.createLogger({
-    transports: [
-        new winston.transports.Console({
-            level: "debug",
-            format: winston.format.combine(
-                winston.format.colorize({colors: CostumLevels.colors}),
-                winston.format.simple
-            )
-        }),
-
-        new winston.transports.File({
-            level: "error",
-            filename: "errors.log"
-        })
-    ]
-})
 
 export default logger

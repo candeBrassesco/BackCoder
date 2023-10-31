@@ -7,6 +7,7 @@ import { ExtractJwt, Strategy as JWTStrategy } from "passport-jwt"
 import { compareData, cookieExtractor } from "../utils.js";
 import { hashData } from "../utils.js";
 import config from "../config.js";
+import logger from "../winston.js";
 
 
 const JWT_SECRET_KEY = config.JWT_SECRET_KEY
@@ -21,6 +22,7 @@ passport.use('login', new LocalStrategy({
     async (req, email, password, done) => {
     try {
         const user = await usersModel.findOne({ email })
+        logger.info('Login attempt')
         if (!user) {
             return done(null, false)
         }
@@ -29,6 +31,7 @@ passport.use('login', new LocalStrategy({
             done(null, user)
         }
     } catch (error) {
+        logger.error(error)
         done(error)
     }
 }))
@@ -71,6 +74,7 @@ passport.use(new GithubStrategy({
                 role: 'admin'
             }
             const userDB = await usersModel.create(newUser)
+            logger.warning(`Admin created: ${newUser.email}`)
             done(null, userDB)
         }
         const usersCart = await cartsModel.create({})
@@ -82,9 +86,10 @@ passport.use(new GithubStrategy({
             cart: usersCart
         }
         const userDB = await usersModel.create(newUser)
+        logger.info(`User created: ${newUser.email}`)
         done(null, userDB)
-        
     } catch (error) {
+        logger.error(error)
         done(error)
     }
 }
@@ -110,6 +115,7 @@ passport.deserializeUser(async (id, done) => {
         const user = await usersModel.findById(id)
         done(null, user)
     } catch (error) {
+        logger.error(error)
         done(error)
     }
 }) 
