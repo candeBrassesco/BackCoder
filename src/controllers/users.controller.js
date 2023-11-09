@@ -1,8 +1,9 @@
+import nodemailer from "nodemailer";
 import userManager from "../dal/dao/mongoManagers/UserManager.js";
 import { generateToken, compareData, hashData } from "../utils.js";
 
 export const registerUserController = async ( req, res ) => {
-    const { first_name, last_name, email, password, age } = req.body
+    const { first_name, last_name, email, password, age, premium } = req.body
     if (!first_name || !last_name || !email || !password || !age) {
         return res.status(400).json({message:'Some data is missing!'})
     }
@@ -10,7 +11,8 @@ export const registerUserController = async ( req, res ) => {
     if (userExists) {
         return res.redirect("/api/views/registerError")
     }
-    const userDB = await userManager.createUser(req.body)
+    const role = premium ? "premium" : "user"
+    const userDB = await userManager.createUser({...req.body, role})
     const token = generateToken(userDB)
     res.cookie("token", token)
     if (userDB) {
@@ -26,6 +28,28 @@ export const logoutUserController = async ( req, res ) => {
         res.clearCookie("token");
         res.redirect('/api/views/login')
     })
+}
+
+export const resetPasswordController = async ( req, res ) => {
+    const {email} = req.body
+    const userExists = await userManager.findUser({email})
+    if (!user) {
+        return res.status(400).json({message:'User not found'})
+    }
+    const token = generateToken()
+    const expires = new Date(Date.now() + 3600000);
+
+    res.cookie("passwordResetToken", token, { expires: expires });
+
+    const transporter = nodemailer.createTransport({
+
+    })
+}
+
+export const changeRolController = async ( req, res ) => {
+    const {uid} = req.params
+    const roleChanged = await userManager.updateRole(uid)
+    res.status(200).json({message:`User ${uid} updated`})
 }
 
 // si no se usa passport para el login
@@ -70,4 +94,8 @@ export const registerErrorViewController = ( req, res ) => {
 
 export const loginErrorViewController = ( req, res ) => {
     res.render("loginError")
+}
+
+export const resetPassViewController = ( req, res ) => {
+    res.render("resetPass")
 }

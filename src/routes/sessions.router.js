@@ -1,6 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
-import { loginUserController, logoutUserController, registerUserController } from "../controllers/users.controller.js";
+import { changeRolController, loginUserController, logoutUserController, registerUserController, resetPasswordController } from "../controllers/users.controller.js";
+import { changeRolAuth } from "../middlewares/auth.middleware.js";
 import SessionDTO from "../dal/dto/sessions.dto.js";
 
 const router = Router()
@@ -8,6 +9,8 @@ const router = Router()
 router.post('/register', registerUserController)
 
 router.post("/login", passport.authenticate("login",{failureRedirect: "/api/views/loginError", successRedirect: "/products", passReqToCallback: true}))
+
+router.post("/resetPass", resetPasswordController )
 
 //register con Github
 router.get('/registerGithub', passport.authenticate("github", { scope: [ 'user:email' ] }))
@@ -23,6 +26,8 @@ router.get("/current", passport.authenticate("jwt", {session:false}), (req, res)
     const userDTO = new SessionDTO(req.user)
     res.send(userDTO)
 })
+
+router.put('/premium/:uid', changeRolAuth, changeRolController )
 
 
 //router.post('/login', loginUserController)

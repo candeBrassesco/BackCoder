@@ -4,6 +4,7 @@ import { usersModel } from "../dal/db/models/users.models.js";
 import { hashData } from "../utils.js";
 import { ErrorMessage, ErrorName } from "../errors/error.enum.js";
 import logger from "../winston.js";
+import config from "../config.js";
 
 
 class UsersRepository {
@@ -70,6 +71,27 @@ class UsersRepository {
                 })
             }
             const updateUser = await usersModel.updateOne({ _id: idUser }, { $set: { cart: idCart } })
+            return updateUser
+        } catch (error) {
+            logger.error(error)
+            return error
+        }
+    }
+
+    async updateRole (idUser) {
+        try {
+            const userExists= await usersModel.findById(idUser)
+            if (!userExists) {
+                CostumError.createError({
+                    name: ErrorName.USER_DATA_INCOMPLETE,
+                    message: ErrorMessage.USER_DATA_INCOMPLETE
+                })
+            }
+            if (userExists.role === "premium") {
+                const updateUser = await usersModel.updateOne({ _id: idUser }, { $set: { role: "user" } })
+                return updateUser
+            }
+            const updateUser = await usersModel.updateOne({ _id: idUser }, { $set: { role: "premium" } })
             return updateUser
         } catch (error) {
             logger.error(error)

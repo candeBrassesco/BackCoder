@@ -11,4 +11,8 @@ password: adminCoder123
 
 logger test: localhost:8080/loggerTest 
 
+add products: localhost:8080/products/addProd (only admin and premium users)
+
+change user role (premium - user): localhost:8080/api/session/
+
 

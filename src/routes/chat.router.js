@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { userAuth } from "../middlewares/role.middleware.js";
+import { chatAuth } from "../middlewares/auth.middleware.js";
 import { getMessagesController } from "../controllers/messages.controller.js";
 
 const router = Router()
 
-router.get("/", userAuth, getMessagesController)
+router.get("/", chatAuth, getMessagesController)
 
 export default router

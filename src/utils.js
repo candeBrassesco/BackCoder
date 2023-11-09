@@ -25,7 +25,6 @@ export const generateToken = (user) => {
 }
 
 //cookie extractor
-
 export const cookieExtractor = (req) => {
     const token = req.cookies.token
     return token

@@ -1,6 +1,8 @@
 <h3>¡Welcome {{user.first_name}}!</h3>
 <a href="/api/session/logout"><button>Log out</button></a>
 
+<button onclick="location.href='/products/addProd'">Add new products</button>
+
 {{#each products}}
 <form id="prodForm" action="/api/cart/{{cartId}}/product/{{id}}" method="POST">
     <h3> {{title}}</h3>

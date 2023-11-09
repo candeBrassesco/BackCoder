@@ -26,11 +26,23 @@ export const getProductByIdController = async (req, res ) => {
 }
 
 export const addProductController = async ( req, res ) => {
-    const {title, description, price, code} = req.body
+    const {title, description, price, code, owner} = req.body
     if ( !title || !description || !price || !code ) {
         return res.status(400).json({message: 'Some data is missing'})
     }
     try {
+        const userExists = await userManager.findUser(owner)
+        if(!userExists) {
+            res.status(400).json({message:'Inexistent user. Check the entered email'})
+        }
+        if(userExists.role === "admin") {
+            const newProd = {
+                ...req.body,
+                owner:"admin"
+            }
+            const newProduct = await productManager.addProduct(newProd)
+            res.status(200).json({message:'Product added', product: newProduct})
+        }
         const newProduct = await productManager.addProduct(req.body)
         res.status(200).json({message: 'Product added', product: newProduct})
     } catch (error) {
@@ -71,4 +83,8 @@ export const viewProductsController = async ( req, res ) => {
         return {...product, cartId: userLogued.cart}
     })
     res.render("products", {products: productsList, user: userLogued.toObject()})
+}
+
+export const viewNewProductsController = async ( req, res ) => {
+    res.render("newProducts")
 }

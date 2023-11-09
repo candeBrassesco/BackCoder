@@ -1,6 +1,6 @@
 import {Router} from 'express'
 import { addProductController, deleteProductController, getProductByIdController, getProductsController, updateProductController } from '../controllers/products.controllers.js'
-import { adminAuth } from '../middlewares/role.middleware.js'
+import { addProdAuth, delOrUpAuth } from '../middlewares/auth.middleware.js'
 
 const router = Router()
 
@@ -8,10 +8,10 @@ router.get("/", getProductsController)
 
 router.get("/:pid", getProductByIdController)
 
-router.post('/', adminAuth, addProductController)
+router.post('/', addProdAuth, addProductController)
 
-router.delete('/:pid', adminAuth, deleteProductController)
+router.delete('/:pid', delOrUpAuth, deleteProductController)
 
-router.put('/:pid', adminAuth, updateProductController)
+router.put('/:pid', delOrUpAuth, updateProductController)
 
 export default router
