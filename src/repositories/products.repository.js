@@ -121,7 +121,7 @@ class ProductsRepository {
                 { stock: stock },
                 { new: true }
             )
-            logger.info(`Stoc of product ${productExist} updated`)
+            logger.info(`Stock ${productExist} updated`)
             return result
         } catch (error) {
             logger.error(error)

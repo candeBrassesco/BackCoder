@@ -46,10 +46,16 @@ export const resetPasswordController = async ( req, res ) => {
     })
 }
 
-export const changeRolController = async ( req, res ) => {
+export const changeRolFormController = async ( req, res ) => {
     const {uid} = req.params
     const roleChanged = await userManager.updateRole(uid)
-    res.status(200).json({message:`User ${uid} updated`})
+    res.redirect("api/views/profile")
+}
+
+export const changeRolController = async ( req, res ) => {
+    const {uid} = req.params
+    const roleChanged = await userManager.changeRole(uid)
+    res.status(200).json({message: `User ${uid} changed role`})
 }
 
 // si no se usa passport para el login
@@ -82,9 +88,15 @@ export const registerViewController = ( req, res ) => {
     res.render("register")
 }
 
-export const profileViewController = ( req, res ) => {
+export const profileViewController = async ( req, res ) => {
+    const {user} = req
+    const userLogged = await userManager.findUser(user.email)
+    let changeRole = "premium"
+    if(user.role === "premium") {
+        changeRole = "user"
+    }
     res.render("profile",{
-        user: req.session.user
+        user: userLogged.toObject(), role: changeRole
     })
 }
 

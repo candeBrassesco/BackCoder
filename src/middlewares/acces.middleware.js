@@ -1,9 +1,5 @@
-export const publicAcces = (req,res,next) => {
-    if(req.session.user) return res.redirect('/profile');
-    next();
-}
-
 export const privateAcces = (req,res,next) => {
-    if(!req.session.user) return res.redirect('/login');
+    const {user} = req
+    if(!user) return res.redirect('/api/views/login');
     next();
 }

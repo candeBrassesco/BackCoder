@@ -1,9 +1,11 @@
-<h2>Your profile</h2>
+<h2>Your profile:</h2>
 
-<div>
-    <p>{{user.name}}</p>
-    <p>{{user.email}}</p>
-    <p>{{user.age}}</p>
+<form action="/api/session/premium/{{user._id}}" method="POST" id="rolForm">
+    <p>First name: {{user.first_name}}</p>
+    <p>Last name: {{user.last_name}}</p>
+    <p>Email:{{user.email}}</p>
+    <p>Role: {{user.role}}</p>
+    <button id="change" type="submit">Change to {{role}}</button>
+</form>
 
-    <a href="/api/session/logout"><button>Log out</button></a>
-</div>
+<button onclick="location.href='/api/session/logout'">Log out</button>

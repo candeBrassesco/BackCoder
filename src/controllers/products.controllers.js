@@ -78,11 +78,11 @@ export const viewProductsController = async ( req, res ) => {
     const {user} = req
     const {limit = 10, page = 1, sort, ...query } = req.query
     const products = await productManager.getProducts(limit, page, sort, query)
-    const userLogued = await userManager.findUser(user.email)
+    const userLogged = await userManager.findUser(user.email)
     const productsList = products.payload.map( product => {
-        return {...product, cartId: userLogued.cart}
+        return {...product, cartId: userLogged.cart}
     })
-    res.render("products", {products: productsList, user: userLogued.toObject()})
+    res.render("products", {products: productsList, user: userLogged.toObject()})
 }
 
 export const viewNewProductsController = async ( req, res ) => {

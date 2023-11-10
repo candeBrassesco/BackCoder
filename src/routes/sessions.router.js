@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import { changeRolController, loginUserController, logoutUserController, registerUserController, resetPasswordController } from "../controllers/users.controller.js";
+import { changeRolFormController, loginUserController, logoutUserController, registerUserController, resetPasswordController } from "../controllers/users.controller.js";
 import { changeRolAuth } from "../middlewares/auth.middleware.js";
 import SessionDTO from "../dal/dto/sessions.dto.js";
 
@@ -27,8 +27,9 @@ router.get("/current", passport.authenticate("jwt", {session:false}), (req, res)
     res.send(userDTO)
 })
 
-router.put('/premium/:uid', changeRolAuth, changeRolController )
+router.post('/premium/:uid', changeRolAuth, changeRolFormController )
 
+router.put('/premium/:uid',)
 
 //router.post('/login', loginUserController)
 

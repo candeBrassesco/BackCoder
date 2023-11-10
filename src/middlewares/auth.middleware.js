@@ -58,8 +58,7 @@ export const delOrUpAuth = async ( req, res, next ) => {
 
 export const changeRolAuth = async ( req, res, next ) => {
     try {
-        const {uid} = req.params
-        const user = await usersModel.findById(uid)
+        const {user} = req
         if(user.role === "admin") {
             res.status(400).json({message: 'Not authorized'})
         }

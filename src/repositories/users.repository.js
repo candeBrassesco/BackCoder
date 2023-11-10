@@ -80,25 +80,58 @@ class UsersRepository {
 
     async updateRole (idUser) {
         try {
-            const userExists= await usersModel.findById(idUser)
-            if (!userExists) {
+            const user = await usersModel.findById(idUser)
+            if (!user) {
                 CostumError.createError({
                     name: ErrorName.USER_DATA_INCOMPLETE,
                     message: ErrorMessage.USER_DATA_INCOMPLETE
                 })
             }
-            if (userExists.role === "premium") {
-                const updateUser = await usersModel.updateOne({ _id: idUser }, { $set: { role: "user" } })
+    
+            const newUser = {
+                _id: user._id,
+                email: user.email,
+                name: user.name,
+                role: user.role,
+            };
+    
+            if (user.role === "premium") {
+                newUser.role = "user";
+            } else {
+                newUser.role = "premium";
+            }
+    
+            const userDelete = await usersModel.deleteOne({ _id: idUser });
+            const userDb = await usersModel.create(newUser);
+    
+            return userDb;
+        } catch (error) {
+            logger.error(error);
+            return error;
+        }
+    }
+
+    async changeRole (idUser) {
+        try {
+            const user = await usersModel.findById(idUser)
+            if (!user) {
+                CostumError.createError({
+                    name: ErrorName.USER_DATA_INCOMPLETE,
+                    message: ErrorMessage.USER_DATA_INCOMPLETE
+                })
+            }
+            if(user.role === "premium") {
+                const updateUser = await usersModel.updateOne({ _id: idUser }, { $set: { role: "user"} })
                 return updateUser
             }
-            const updateUser = await usersModel.updateOne({ _id: idUser }, { $set: { role: "premium" } })
+            const updateUser = await usersModel.updateOne({ _id: idUser }, { $set: { cart: "premium" } })
             return updateUser
         } catch (error) {
             logger.error(error)
             return error
         }
     }
-
+   
     async findUsersCart(email) {
         try {
             const user = await usersModel.findOne({ email })

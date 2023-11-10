@@ -1,13 +1,13 @@
 import { Router } from "express";
-import { privateAcces, publicAcces } from "../middlewares/acces.middleware.js";
+import { privateAcces } from "../middlewares/acces.middleware.js";
 import { loginErrorViewController, loginViewController, profileViewController, registerErrorViewController, registerViewController, resetPassViewController } from "../controllers/users.controller.js";
 
 const router = Router()
 
 
-router.get('/login', publicAcces, loginViewController)
+router.get('/login', loginViewController)
 
-router.get('/register', publicAcces, registerViewController)
+router.get('/register', registerViewController)
 
 router.get('/profile', privateAcces, profileViewController)
 
