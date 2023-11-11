@@ -47,9 +47,9 @@ export const resetPasswordController = async ( req, res ) => {
 }
 
 export const changeRolFormController = async ( req, res ) => {
-    const {uid} = req.body
+    const {uid} = req.params
     const roleChanged = await userManager.updateRole(uid)
-    res.redirect("api/views/profile")
+    res.status(200).json({message: "User updated"})
 }
 
 

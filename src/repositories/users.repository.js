@@ -87,8 +87,11 @@ class UsersRepository {
                     message: ErrorMessage.USER_DATA_INCOMPLETE
                 })
             }
-            user.role === "premium" ? "user" : "premium"
-            userUpd = await user.save()         
+            if(user.role === "premium") {
+                userUpd = await usersModel.findByIdAndUpdate({_id: idUser}, {role: "user"})
+                return userUpd
+            }
+            userUpd = await usersModel.findByIdAndUpdate({_id: idUser}, {role: "premium"})
             return userUpd
         } catch (error) {
             logger.error(error);
