@@ -29,7 +29,7 @@ router.get("/current", passport.authenticate("jwt", {session:false}), (req, res)
 
 router.post('/premium/:uid', changeRolAuth, changeRolFormController )
 
-router.put('/premium/:uid',)
+router.put('/premium/:uid', changeRolFormController)
 
 //router.post('/login', loginUserController)
 

@@ -48,15 +48,6 @@ class UserManager {
             return error
         }
     }
-
-    async changeRole (uid) {
-        try {
-            const roleChanged = await usersRepository.changeRole(uid)
-            return roleChanged
-        } catch (error) {
-            return error
-        }
-    }
 }
 
 const userManager = new UserManager

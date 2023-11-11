@@ -47,16 +47,11 @@ export const resetPasswordController = async ( req, res ) => {
 }
 
 export const changeRolFormController = async ( req, res ) => {
-    const {uid} = req.params
+    const {uid} = req.body
     const roleChanged = await userManager.updateRole(uid)
     res.redirect("api/views/profile")
 }
 
-export const changeRolController = async ( req, res ) => {
-    const {uid} = req.params
-    const roleChanged = await userManager.changeRole(uid)
-    res.status(200).json({message: `User ${uid} changed role`})
-}
 
 // si no se usa passport para el login
 export const loginUserController = async ( req, res ) => {
