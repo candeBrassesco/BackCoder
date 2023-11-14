@@ -48,6 +48,15 @@ class UserManager {
             return error
         }
     }
+
+    async changePass (email, pass1, pass2) {
+        try {
+            const passChanged = await usersRepository.changePass(email, pass1, pass2)
+            return passChanged
+        } catch (error) {
+            return error
+        }
+    }
 }
 
 const userManager = new UserManager

@@ -1,10 +1,7 @@
 <h2>Reset password</h2>
 
-<form id="resetForm">
+<form id="resetForm" action="/api/session/resetPass" method="POST" >
      Enter your email: <input type="text" name="email" id="email">
      <button type="submit" id="send">Send</button>
 </form>
 
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="/js/reset.js"></script>

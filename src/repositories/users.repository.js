@@ -1,10 +1,9 @@
 import cartManager from "../dal/dao/mongoManagers/CartManager.js";
 import CostumError from "../errors/CostumError.js";
 import { usersModel } from "../dal/db/models/users.models.js";
-import { hashData } from "../utils.js";
+import { compareData, hashData } from "../utils.js";
 import { ErrorMessage, ErrorName } from "../errors/error.enum.js";
 import logger from "../winston.js";
-import config from "../config.js";
 
 
 class UsersRepository {
@@ -87,11 +86,17 @@ class UsersRepository {
                     message: ErrorMessage.USER_DATA_INCOMPLETE
                 })
             }
-            if(user.role === "premium") {
-                userUpd = await usersModel.findByIdAndUpdate({_id: idUser}, {role: "user"})
+            if (user.role === "admin") {
+                CostumError.createError({
+                    name: ErrorName.USER_DATA_INCOMPLETE,
+                    message: ErrorMessage.USERROLE_DATA_INCOMPLETE
+                })
+            }
+            if (user.role === "premium") {
+                userUpd = await usersModel.findByIdAndUpdate({ _id: idUser }, { role: "user" })
                 return userUpd
             }
-            userUpd = await usersModel.findByIdAndUpdate({_id: idUser}, {role: "premium"})
+            userUpd = await usersModel.findByIdAndUpdate({ _id: idUser }, { role: "premium" })
             return userUpd
         } catch (error) {
             logger.error(error);
@@ -99,6 +104,35 @@ class UsersRepository {
         }
     }
 
+    async changePass(email, pass1, pass2) {
+        try {
+            const user = await usersModel.findOne({ email })
+            if (!user) {
+                CostumError.createError({
+                    name: ErrorName.USER_DATA_INCOMPLETE,
+                    message: ErrorMessage.USER_DATA_INCOMPLETE
+                })
+            }
+            if (pass1 !== pass2) {
+                CostumError.createError({
+                    name: ErrorName.RESETPASS_DATA_INCOMPLETE,
+                    message: ErrorMessage.RESETPASS_DATA_INCOMPLETE
+                })
+            }
+            const newHashPassword = await hashData(pass1)
+            if (newHashPassword === user.password) {
+                CostumError.createError({
+                    name: ErrorName.RESETPASS_DATA_INCOMPLETE,
+                    message: ErrorMessage.NEWPASS_DATA_INCOMPLETE
+                })
+            }
+            const userUpd = await usersModel.updateOne({ _id: user._id }, { $set: {password: newHashPassword} } )
+            return userUpd
+        } catch (error) {
+            logger.error(error)
+            return error
+        }
+    }
 
     async findUsersCart(email) {
         try {
