@@ -74,12 +74,12 @@ export const resetPasswordController = async (req, res) => {
 };
 
 export const changePassController = async (req, res) => {
-    const { email, pass1, pass2 } = req.body
+    const { email, newPassword, repeatPassword} = req.body
     const userExists = await userManager.findUser(email)
     if (!userExists) {
         res.status(400).json({ message: 'User not found' })
     }
-    const passChanged = await userManager.changePass(email, pass1, pass2)
+    const passChanged = await userManager.changePass(email, newPassword, repeatPassword)
     res.send('Password changed')
 }
 
