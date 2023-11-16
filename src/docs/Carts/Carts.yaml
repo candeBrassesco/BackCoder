@@ -1,0 +1,12 @@
+paths:
+  /api/cart:
+    get:
+      summary: Get all carts
+      tags:
+         -Carts
+      responses:
+        "200":
+          description: All users get succesfully
+        "500":
+          description: Internal error
+

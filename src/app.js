@@ -1,7 +1,7 @@
 import express from 'express'
 import handlebars from 'express-handlebars'
-import {__dirname} from './utils.js'
-import {Server} from "socket.io"
+import { __dirname } from './utils.js'
+import { Server } from "socket.io"
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import FileStore from 'session-file-store'
@@ -9,8 +9,11 @@ import MongoStore from 'connect-mongo'
 import './dal/db/dbConfig.js'
 import mongoose from 'mongoose'
 import passport from 'passport'
+import path from 'path'
 import './passport/passportStrategies.js'
 import config from './config.js'
+import swaggerJSDoc from 'swagger-jsdoc'
+import swaggerUiExpress from 'swagger-ui-express'
 
 //routers
 import productsRouter from './routes/products.router.js'
@@ -26,20 +29,20 @@ import loggerRouter from './routes/loggerTest.router.js'
 
 const app = express()
 
-app.use (express.json())
-app.use(express.urlencoded({extended:true}))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 //__dirname
 app.use(express.static(__dirname + '/public', {
-    mimeTypes: {
-      '/js/index.js': 'application/javascript'
-    }
-  }));
+  mimeTypes: {
+    '/js/index.js': 'application/javascript'
+  }
+}));
 
 //handlebars setting
 app.engine('handlebars', handlebars.engine());
 app.set('view engine', 'handlebars');
-app.set('views', __dirname+'/views');
+app.set('views', __dirname + '/views');
 
 //cookies
 app.use(cookieParser(config.SECRET_COOKIES))
@@ -50,15 +53,30 @@ const connection = mongoose.connect(config.MONGO_URL)
 const filestore = FileStore(session)
 
 app.use(
-    session({
+  session({
     store: new MongoStore({
-        mongoUrl: config.MONGO_URL,
-        ttl: 3600
+      mongoUrl: config.MONGO_URL,
+      ttl: 3600
     }),
     secret: config.SECRET_MONGO,
     resave: false,
     saveUninitialized: false
-}))
+  }))
+
+//swagger
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.1",
+    info: {
+      title: "BackCoder Documentation",
+      description: "BackCoder API Rest"
+    }
+  },
+  apis: [`${path.join(__dirname,"../docs/**/*.yaml")}`]
+}
+
+const specs = swaggerJSDoc(swaggerOptions)
+app.use("/api/docs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
 //passport
 app.use(passport.initialize()) //inicializa passport
@@ -81,7 +99,7 @@ app.use("/loggerTest", loggerRouter)
 const PORT = config.PORT
 // escucha solicitudes del puerto 8080
 const httpServer = app.listen(PORT, () => {
-    console.log(`Escuchando al puerto ${PORT}`)
+  console.log(`Listening on ${PORT}`)
 })
 
 
