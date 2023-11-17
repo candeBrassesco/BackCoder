@@ -76,7 +76,6 @@ const swaggerOptions = {
 }
 
 const specs = swaggerJSDoc(swaggerOptions);
-console.log(__dirname)
 app.use("/api/docs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
 //passport

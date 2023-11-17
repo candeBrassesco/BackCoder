@@ -1,44 +1,49 @@
 paths:
-  /api/users:
+  /api/cart:
     get:
-      summary: Obtener todos los usuarios
+      summary: Get all carts
       tags:
-        - Usuarios
+        - Carts
       responses:
         "200":
-          description: Todos los usuarios fueron obtenidos correctamente
-        "401":
-          description: No autorizado
+          description: All carts get succesfully
         "500":
-          description: Error interno
-  /api/users/{id}:
-    get:
-      summary: Obtener un usuario
+          description: Internal error
+    post:
+      summary: Add a new cart
       tags:
-        - Usuarios
+        - Carts
+      responses:
+        "200":
+          description: New cart added succesfully
+        "500":
+          description: Internal Error      
+  /api/cart/{cid}:
+    get:
+      summary: Get cart by id
+      tags:
+        - Carts
       parameters:
-        - name: id
+        - name: cid
           in: path
-          description: id del usuario
+          description: Cart id
           required: true
           schema:
             type: string
       responses:
         "200":
-          description: El usuario fue obtenido correctamente
-        "401":
-          description: No autorizado
+          description: Cart by id get succesfully
         "500":
-          description: Error interno
+          description: Internal error
     put:
-      summary: Actualizar usuario
+      summary: Update cart by id
       tags:
-        - Usuarios
+        - Carts
       parameters:
-        - name: id
+        - name: cid
           in: path
           required: true
-          description: id del usuario
+          description: Cart id
           schema:
             $type: string
       requestBody:
@@ -46,68 +51,174 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#components/requestBodies/updateUser"
+              $ref: "#components/requestBodies/updateCart"
+      responses:
+        "200":
+          description: Cart updated succesfully
+        "500":
+          description: Internal error
     delete:
-      summary: eliminar un usuario por id
+      summary: Delete a cart by id
       tags:
-        - Usuarios
+        - Carts
       parameters:
-        - name: uid
+        - name: cid
           in: path
           required: true
-          description: uid es el id del usuario que desea eliminar
+          description: cid is the cart to delete id
           schema:
             $type: string
       responses:
         "200":
-          description: Se elimino el usuario correctamente
+          description: Cart deleted succesfully
         "500":
-          description: Error interno del servidor
+          description: Internal error
+  /api/cart/{cid}/purchase:
+    get:
+      summary: Get purchase cart with products bought
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Cart id
+          schema:
+            $type: string
+      responses:
+        "200": 
+          description: Products bought get succesfully
+        "500": 
+          description: Internal Error
+  /api/cart/{cid}/product/{pid}:
+    post:
+      summary: Add product to cart
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: cart id
+          schema:
+            $type: string
+        - name: pid
+          in: path
+          required: true
+          description: product id
+          schema:
+            $type: string
+      responses:
+        "200":
+          description: Product added succesfully
+        "401":
+          description: Not authorized  
+        "500":
+          description: Internal error
+    put:
+      summary: Update quantity of a product on cart
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: cart id
+          schema:
+            $type: string
+        - name: pid
+          in: path
+          required: true
+          description: product id
+          schema:
+            $type: string
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/updateProductQuant"
+      responses:
+        "200":
+          description: Product quantity updated succesfully
+        "500":
+          description: Internal error
+    delete:
+      summary: Delete product on cart
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: cart id
+          schema:
+            $type: string
+        - name: pid
+          in: path
+          required: true
+          description: product id
+          schema:
+            $type: string
+      responses:
+        "200":
+          description: Product remove succesfully
+        "500":
+          description: Internal error
 
 components:
   schemas:
-    User:
+    Carts:
       type: object
       properties:
         _id:
           type: ObjectId
-          description: id del usuario autogenerado por la base de datos
-        first_name:
-          type: string
-          description: nombre del usuario
-        last_name:
-          type: string
-          description: apellido del usuario
-        email:
-          type: string
-          description: correo del usuario, campo unico
-        password:
-          type: string
-          description: contraseña del usuario hasheada
+          description: cart id
+        products:
+          type: array
+          description: Products on cart
+          properties:
+            pid:
+              type: ObjectId
+              $ref: Products
+              description: Products on cart id
+            quantity:
+              $type: number
+              description: Number of units of products on cart
       example:
         _id: ObjectId('ahjg7862jahsgd871263')
-        first_name: pepe
-        last_name: suarez
-        email: pepe@gmail.com
-        password: $jkasd981273kjahsd8912
+        products:
+          0: 
+            pid: ObjectId('64ed452c1b58a98a32eb1be6')
+            quantity: 2
+          1:
+            pid: ObjectId('64ed4704e3abb5b38a3a3e23')
+            quantity: 1
   requestBodies:
-    updateUser:
+    updateCart:
       type: object
       properties:
-        first_name:
-          type: string
-          description: nombre del usuario
-        last_name:
-          type: string
-          description: apellido del usuario
-        email:
-          type: string
-          description: correo del usuario, campo unico
-        password:
-          type: string
-          description: contraseña del usuario
+        pid:
+          type: ObjectId
+          description: product id
+        quantity:
+          type: number
+          description: number of units of the product
+      example: 
+        [ 
+          {
+            pid: 65305b95ea44194772ec7688,
+            quantity: 5
+          }
+        ]
+    updateProductQuant:
+      type: object
+      properties:
+        quantity:
+          type: number
+          description: new product stock
       example:
-        first_name: pepe
-        last_name: suarez
-        email: pepe@gmail.com
-        password: "1234"
+        quantity: 4
+            
+          
+   
