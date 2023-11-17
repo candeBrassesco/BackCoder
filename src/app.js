@@ -72,10 +72,11 @@ const swaggerOptions = {
       description: "BackCoder API Rest"
     }
   },
-  apis: [`${path.join(__dirname,"../docs/**/*.yaml")}`]
+  apis: [`${__dirname}/docs/**/*.yaml`],
 }
 
-const specs = swaggerJSDoc(swaggerOptions)
+const specs = swaggerJSDoc(swaggerOptions);
+console.log(__dirname)
 app.use("/api/docs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
 //passport
