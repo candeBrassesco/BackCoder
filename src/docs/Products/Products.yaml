@@ -1,0 +1,187 @@
+paths:
+  /api/products:
+    get:
+      summary: Get all products
+      tags:
+        - Products
+      responses:
+        "200":
+          description: All products get succesfully
+        "500":
+          description: Internal error
+    post:
+      summary: Add a new product
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/postNewProd"
+      responses:
+        "200":
+          description: New products added succesfully
+        "400":
+          description: Error on data
+        "401":
+          description: Not authorized
+        "500":
+          description: Internal Error      
+  /api/products/{pid}:
+    get:
+      summary: Get products by id
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          description: product id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product by id get succesfully
+        "500":
+          description: Internal error
+    put:
+      summary: Update product by id
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: product id
+          schema:
+            $type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/updateProduct"
+      responses:
+        "200":
+          description: Cart updated succesfully
+        "400":
+          description: Error on data
+        "401":
+          description: Not authorized
+        "500":
+          description: Internal error
+    delete:
+      summary: Delete product by id
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: product id
+          schema:
+            $type: string
+      responses:
+        "200":
+          description: Cart deleted succesfully
+        "401":
+          description: Not authorized
+        "500":
+          description: Internal error
+
+components:
+  schemas:
+    Products:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: cart id
+        title:
+          type: string
+          description: product's name
+        description:
+          type: string
+          description: Info about product
+        price:
+          type: number
+          description: Product's cost
+        stock:
+          type: number
+          description: Units available
+        code:
+          type: string
+          description: Unique product's identification
+        status:
+          type: string
+          description: Product's status
+        thumbnails:
+          type: string
+          description: Product's image
+        owner:
+          type: string
+          description: Who post the product. Must be admin or premium user
+      example:
+        _id: ObjectId('654d45e44b3aabc32e2da47c')
+        title: IPhone 15
+        description: This is the iphone 15
+        price: 799
+        stock: 52
+        code: iphone15
+        thumbnails:
+        owner: candelabrassesco99@gmail.com
+  requestBodies:
+    postNewProd:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Product's name
+        description:
+          type: string
+          description: Info about product
+        price:
+          type: number
+          description: Product's cost
+        stock:
+          type: number
+          description: Units available
+        code:
+          type: string
+          description: Unique product's identification
+        thumbnails:
+          type: string
+          description: Product's image
+        owner:
+          type: string
+          description: Who post the product
+      example:
+        title: iPhone 11
+        description: This is iphone 11
+        price: 499
+        stock: 50
+        code: iphone11
+    updateProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Product's name
+        description:
+          type: string
+          description: Info about product
+        price:
+          type: number
+          description: Product's cost
+        stock:
+          type: number
+          description: Units available
+        code:
+          type: string
+          description: Unique product's identification
+        thumbnails:
+          type: string
+          description: Product's image
+      example:
+        stock: 4
