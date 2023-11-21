@@ -4,7 +4,8 @@
   "type": "module",
   "main": "app.js",
   "scripts": {
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "test": "mocha -t 10000 test"
   },
   "keywords": [],
   "author": "",
@@ -37,5 +38,10 @@
     "swagger-ui-express": "^5.0.0",
     "winston": "^3.11.0"
   },
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@types/chai": "^4.3.11",
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0"
+  }
 }
