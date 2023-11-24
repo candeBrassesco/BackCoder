@@ -43,7 +43,8 @@ export const updateCartController = async ( req, res ) => {
     const products = req.body
     try {
         const response = await cartManager.updateCart(products, cid)
-        res.status(200).json({message:'Cart updated', response})
+        const cartUp = await cartManager.getCartsById(cid)
+        res.status(200).json({message:'Cart updated', cartUp})
     } catch (error){
         res.status(500).json({error})
     }
