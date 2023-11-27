@@ -48,7 +48,7 @@ class CartsRepository {
     async addProductToCart(cid, pid) {
         try {
             const cartById = await cartsModel.findById(cid)
-            const prodById = await productManager.findById(pid)
+            const prodById = await productManager.getProductById(pid)
             if (!cartById || !prodById) {
                 CostumError.createError({
                     name: ErrorName.CARTPRODUCT_DATA_INCOMPLETE,
@@ -82,8 +82,7 @@ class CartsRepository {
                     message: ErrorMessage.FIND_DATA_INCOMPLETE
                 })
             }
-            cart.products = []
-            return await cartsModel.updateOne({ _id: cid }, { $set: { products: cart.products } })
+            const cartDeleted = await cartsModel.findByIdAndDelete(cid)
         } catch (error) {
             logger.error(error)
             return error

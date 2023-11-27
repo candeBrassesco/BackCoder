@@ -65,7 +65,8 @@ export const deleteCartController = async ( req, res ) => {
     const {cid} = req.params
     try {
         const response = await cartManager.deleteCart(cid)
-        res.status(200).json({message:'Cart deleted', response})
+        const newCartsList = await cartManager.getCarts()
+        res.status(200).json({message:'Cart deleted. New cart list.', newCartsList})
     } catch (error){
         res.status(500).json({error})
     }
