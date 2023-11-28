@@ -122,6 +122,7 @@ class CartsRepository {
             }
             return await cart.replaceOne(cartToUpdate)
         } catch (error) {
+            logger.error(error)
             return error
         }
     }
@@ -147,6 +148,7 @@ class CartsRepository {
             cart.save()
             return cart
         } catch (error) {
+            logger.error(error)
             return error
         }
     }
@@ -199,6 +201,7 @@ class CartsRepository {
                 }
             }
         } catch (error) {
+            logger.error(error)
             return error
         }
     }

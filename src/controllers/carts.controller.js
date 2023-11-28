@@ -55,7 +55,8 @@ export const updateQuantityController = async ( req, res ) => {
     const quantity = req.body
     try {
         const productUpdated = await cartManager.updateQuantity(quantity, cid, pid)
-        res.status(200).json({message: 'Quantity updated', productUpdated})
+        const cart = await cartManager.getCartsById(cid)
+        res.status(200).json({message: 'Quantity updated. Cart updated', cart})
     } catch (error){
         res.status(500).json({error})
     }
