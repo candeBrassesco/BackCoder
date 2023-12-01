@@ -76,6 +76,11 @@ export const deleteCartController = async ( req, res ) => {
 export const deleteProductOnCartController = async ( req, res ) => {
     const {cid, pid} = req.params
     try {
+        const cart = await cartManager.getCartsById(cid)
+        const prodOnCart = cart.products.find((p) => p.pid == pid)
+        if(!prodOnCart) {
+            res.status(500).json({error})
+        }
         const response = await cartManager.deleteProductOnCart(cid, pid)
         res.status(200).json({message: 'Product deleted', response})
     } catch (error) {
@@ -99,6 +104,7 @@ export const purchaseCartController = async ( req, res ) => {
     const {user} = req
     try {
         const purchase = await cartManager.purchaseCart(cid, user)
+        const resetCart = await cartManager.resetCart(cid)
         res.status(200).json({message: 'Products bought', purchase})
     } catch (error) {
         res.status(500).json({error})

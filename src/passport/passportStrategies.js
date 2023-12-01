@@ -27,9 +27,10 @@ passport.use('login', new LocalStrategy({
             return done(null, false)
         }
         const isPassword = await compareData(password, user.password)
-        if (isPassword) {
-            done(null, user)
+        if (!isPassword) {
+            done(null, false)
         }
+        done(null, user)
     } catch (error) {
         logger.error(error)
         done(error)

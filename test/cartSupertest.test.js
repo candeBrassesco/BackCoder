@@ -4,29 +4,17 @@ import { expect } from "chai";
 const requester = supertest('http://localhost:8080')
 
 describe("Cart endpoints", () => {
-    describe("PUT /api/cart/:cid/product/:pid", () => {
-        const newQuant = {
-            quantity: 4
+    describe("POST /api/cart/:cid/product/:pid", () => {
+        const userMock = {
+            email: "candelabrassesco99gmail.com",
+            password: "candela99"
         }
-        it("should update the quantity of certain product", async () => {
-            const response = await requester.put("/api/cart/6533d7493a91900b27ce2753/product/64ed4704e3abb5b38a3a3e23").send(newQuant)
-            const cart = await requester.get("/api/cart/6533d7493a91900b27ce2753")
-            const quant1 = cart._body.cartById.products[0].quantity
-            console.log(quant1)
-            const backQuant = {
-                quantity: 3
-            }
-            const resetQuant = await requester.put("/api/cart/6533d7493a91900b27ce2753/product/64ed4704e3abb5b38a3a3e23").send(backQuant)
-            const cart2 = await requester.get("/api/cart/6533d7493a91900b27ce2753")
-            const quant2 = cart2._body.cartById.products[0].quantity
-            console.log(quant2)
-            expect(quant2).to.not.be.equal(quant1)
-        })
-    })
-    describre("DELETE /api/cart/:cid/product/:pid", () => {
-        it("should delete the product on cart", async () => {
-            const response = await requester.delete("/api/cart/6533d7493a91900b27ce2753/product/64ed4704e3abb5b38a3a3e23")
-            
+        it("should add the chosen product to a cart", async () => {
+            await requester.post("/api/session/login").send(userMock)
+            const response = await requester.post("/api/cart/6568c8052a8978f670ee9d69/product/64ed452c1b58a98a32eb1be6")
+            await requester.delete("/api/cart/6568c8052a8978f670ee9d69/product/64ed452c1b58a98a32eb1be6")
+            console.log(response)
+            expect(response.statusCode).to.be.equal(200)
         })
     })
 })

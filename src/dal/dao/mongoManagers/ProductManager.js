@@ -22,7 +22,7 @@ class ProductManager {
 
     async getProductById(id) {
         try {
-            const product = await productsRepository.getProductById(id)
+            const product = await productsRepository.findProductById(id)
             return product
         } catch (error) {
             return error

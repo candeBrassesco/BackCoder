@@ -1,5 +1,5 @@
 import userManager from "../dal/dao/mongoManagers/UserManager.js";
-import { generateToken, compareData, hashData } from "../utils.js";
+import { generateToken, compareData } from "../utils.js";
 import { transporter } from "../nodemailer.js";
 
 export const registerUserController = async (req, res) => {
@@ -89,8 +89,7 @@ export const changeRolFormController = async (req, res) => {
     res.status(200).json({ message: "User updated" })
 }
 
-
-// si no se usa passport para el login
+// login without passport
 export const loginUserController = async (req, res) => {
     const { email, password } = req.body
 

@@ -89,6 +89,22 @@ class CartsRepository {
         }
     }
 
+    async resetCart(cid) {
+        try {
+            const cart = await cartsModel.findById(cid)
+            if (!cart) {
+                CostumError.createError({
+                    name: ErrorName.DELETE_DATA_INCOMPLETE,
+                    message: ErrorMessage.FIND_DATA_INCOMPLETE
+                })
+            }
+            cart.products = []
+            return await cartsModel.updateOne({ _id: cid }, { $set: { products: cart.products } })
+        } catch (error) {
+            return error
+        }
+    }
+
     async deleteProductOnCart(cid, pid) {
         try {
             const cart = await cartsModel.findById(cid)
@@ -103,7 +119,7 @@ class CartsRepository {
             return response
         } catch (error) {
             logger.error(error)
-            return error  
+            return error
         }
     }
 
@@ -131,7 +147,7 @@ class CartsRepository {
         try {
             const cart = await cartsModel.findById(cid)
             const product = cart.products.find(p => p.pid == pid)
-            if (!cart || !product){
+            if (!cart || !product) {
                 CostumError.createError({
                     name: ErrorName.CARTUPD_DATA_INCOMPLETE,
                     message: ErrorMessage.UPDCARTQUANT_DATA_INCOMPLETE
@@ -157,23 +173,25 @@ class CartsRepository {
         try {
             const cart = await cartsModel.findById(cid)
             const userExist = await userManager.findUser(user.email)
-            if(!cart || !userExist) {
+            if (!cart || !userExist) {
                 CostumError.createError({
                     name: ErrorName.PURCHASE_DATA_INCOMPLETE,
                     message: ErrorMessage.PURCHASE_DATA_INCOMPLETE
                 })
-            } 
+            }
             let total = 0
             let cartProducts = cart.products
+            console.log(cartProducts)
             let productsBought = []
             let productsNotBought = []
             for (let i = 0; i < cartProducts.length; i++) {
                 const product = cartProducts[i]
-                const dbProduct = await productManager.getProductById(product._id)
+                const dbProduct = await productManager.getProductById(product.pid)
                 if (product.quantity <= dbProduct.stock) {
-                    let totalPrice = product.quantity * dbProduct
+                    let totalPrice = product.quantity * dbProduct.price
                     total += totalPrice
                     const newStock = dbProduct.stock - product.quantity
+                    console.log(newStock)
                     await productManager.updateProductStock(dbProduct._id, newStock)
                     productsBought.push({
                         _id: dbProduct._id,
@@ -193,19 +211,18 @@ class CartsRepository {
                     name: ErrorName.STOCKPROD_DATA_INCOMPLETE,
                     message: ErrorMessage.STOCKPROD_DATA_INCOMPLETE
                 })
-            } else {
-                const ticket = await ticketsModel.create({ purchaser: user.email, amount: total })
-                return {
-                    productsBought,
-                    ticket
-                }
             }
-        } catch (error) {
-            logger.error(error)
-            return error
+            const ticket = await ticketsModel.create({ purchaser: user.email, amount: total })
+            return {
+                productsBought,
+                ticket
+            }
+            } catch (error) {
+                logger.error(error)
+                return error
+            }
         }
-    }
 }
 
-const cartsRepository = new CartsRepository()
+    const cartsRepository = new CartsRepository()
 export default cartsRepository

@@ -13,6 +13,7 @@ router.post("/resetPass", resetPasswordController )
 
 router.post('/changePass', changePassController)
 
+
 //register con Github
 router.get('/registerGithub', passport.authenticate("github", { scope: [ 'user:email' ] }))
 

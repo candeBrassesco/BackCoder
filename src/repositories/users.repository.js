@@ -62,15 +62,16 @@ class UsersRepository {
     async updateOne(idUser, idCart) {
         try {
             const userExists = await usersModel.findById(idUser)
-            const cartExists = await cartManager.findById(idCart)
+            const cartExists = await cartManager.getCartsById(idCart)
+            console.log(cartExists)
             if (!userExists || !cartExists) {
                 CostumError.createError({
                     name: ErrorName.CARTUPD_DATA_INCOMPLETE,
                     message: ErrorMessage.USERCART_DATA_INCOMPLETE
                 })
             }
-            const updateUser = await usersModel.updateOne({ _id: idUser }, { $set: { cart: idCart } })
-            return updateUser
+            userUpd = await usersModel.findByIdAndUpdate({ _id: idUser }, { cart: idCart })
+            return userUpd
         } catch (error) {
             logger.error(error)
             return error

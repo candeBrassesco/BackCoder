@@ -48,6 +48,15 @@ class CartManager {
         }
     }
 
+    async resetCart(cid) {
+        try{
+            const resetCart = await cartsRepository.resetCart(cid)
+            return resetCart
+        } catch (error) {
+            return error
+        }
+    }
+
     async deleteProductOnCart(cid, pid) {
         try {
             const productDeleted = await cartsRepository.deleteProductOnCart( cid, pid )
