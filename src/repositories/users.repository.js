@@ -59,6 +59,24 @@ class UsersRepository {
         }
     }
 
+    async deleteUser (email) {
+        try {
+            const user = await usersModel.findOne({email})
+            if (!user) {
+                CostumError.createError({
+                    name: ErrorName.USER_DATA_INCOMPLETE,
+                    message: ErrorMessage.USER_DATA_INCOMPLETE
+                })
+            }
+            const uid = user._id
+            await usersModel.findByIdAndDelete(uid)
+        } catch (error) {
+            logger.error(error)
+            return error
+        }
+    }
+
+
     async updateOne(idUser, idCart) {
         try {
             const userExists = await usersModel.findById(idUser)

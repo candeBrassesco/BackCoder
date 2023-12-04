@@ -14,5 +14,15 @@ logger test: localhost:8080/loggerTest
 add products: localhost:8080/products/addProd (only admin and premium users)
 
 
+TEST: 
+ 
+cart test:
+"test": "mocha -t 10000 test/cartSupertest.test.js" 
+
+product test:
+"test": "mocha -t 10000 test/productSupertest.test.js"
+
+session test:
+"test": "mocha -t 10000 test/sessionSupertest.test.js"
 
 

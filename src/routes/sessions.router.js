@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import { changePassController, changeRolFormController, loginUserController, logoutUserController, registerUserController, resetPasswordController } from "../controllers/users.controller.js";
+import { changePassController, changeRolFormController, deleteUserController, loginUserController, logoutUserController, registerUserController, resetPasswordController } from "../controllers/users.controller.js";
 import SessionDTO from "../dal/dto/sessions.dto.js";
 
 const router = Router()
@@ -13,6 +13,7 @@ router.post("/resetPass", resetPasswordController )
 
 router.post('/changePass', changePassController)
 
+router.delete('/delete', deleteUserController)
 
 //register con Github
 router.get('/registerGithub', passport.authenticate("github", { scope: [ 'user:email' ] }))
@@ -30,6 +31,8 @@ router.get("/current", passport.authenticate("jwt", {session:false}), (req, res)
 })
 
 router.post('/premium/:uid', changeRolFormController)
+
+
 
 
 export default router

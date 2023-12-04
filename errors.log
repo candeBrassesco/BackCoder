@@ -7,3 +7,5 @@
 {"level":"error"}
 {"level":"error"}
 {"level":"error"}
+{"kind":"string","message":"Cast to string failed for value \"{ email: 'marigonza@gmail.com' }\" (type Object) at path \"email\" for model \"Users\"","name":"CastError","path":"email","reason":null,"stringValue":"\"{ email: 'marigonza@gmail.com' }\"","value":{"email":"marigonza@gmail.com"},"valueType":"Object"}
+{"kind":"string","message":"Cast to string failed for value \"{ email: 'marigonza@gmail.com' }\" (type Object) at path \"email\" for model \"Users\"","name":"CastError","path":"email","reason":null,"stringValue":"\"{ email: 'marigonza@gmail.com' }\"","value":{"email":"marigonza@gmail.com"},"valueType":"Object"}

@@ -76,8 +76,12 @@ export const resetPasswordController = async (req, res) => {
 export const changePassController = async (req, res) => {
     const { email, newPassword, repeatPassword} = req.body
     const userExists = await userManager.findUser(email)
+    const actPass = await compareData(newPassword, userExists.password)
     if (!userExists) {
         res.status(400).json({ message: 'User not found' })
+    }
+    if(actPass) {
+        res.status(500).json({message: 'Error. New password must be different from the actual one.'})
     }
     const passChanged = await userManager.changePass(email, newPassword, repeatPassword)
     res.send('Password changed')
@@ -87,6 +91,12 @@ export const changeRolFormController = async (req, res) => {
     const { uid } = req.params
     const roleChanged = await userManager.updateRole(uid)
     res.status(200).json({ message: "User updated" })
+}
+
+export const deleteUserController = async (req, res) => {
+    const {email} = req.body
+    const userDeleted = await userManager.deleteUser(email)
+    res.status(200).json({message: "User deleted"})
 }
 
 // login without passport

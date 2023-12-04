@@ -22,6 +22,15 @@ class UserManager {
         }
     }
 
+    async deleteUser(email) {
+        try {
+            const delUser = await usersRepository.deleteUser(email)
+            return delUser
+        } catch (error) {
+            return error
+        }
+    }
+
     async updateOne(idUser, idCart){
         try {
             const updateUser = await usersRepository.updateOne(idUser, idCart)
