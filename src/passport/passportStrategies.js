@@ -30,6 +30,8 @@ passport.use('login', new LocalStrategy({
         if (!isPassword) {
             done(null, false)
         }
+        const now = new Date()
+        await usersModel.updateOne({ _id: user._id }, { $set: {last_connection: now} })
         done(null, user)
     } catch (error) {
         logger.error(error)

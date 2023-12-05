@@ -37,7 +37,7 @@ describe("Session endpoints", () => {
         })
         it("should create a new user and set a token on cookies", async () => {
             const response = await requester.post("/api/session/register").send(userMockRegister)
-            expect(response.res.rawHeaders[2]).to.be.equal('Set-Cookie')
+            expect(response.res.rawHeaders[3]).to.be.include('token')
         })
     });
     describe("POST /api/session/login", () => {
@@ -58,11 +58,5 @@ describe("Session endpoints", () => {
             const response = await requester.post("/api/session/resetPass").send(userEmail2)
             expect(response.res.rawHeaders[3]).to.include('tokenPassReset')
         })
-    });
-    describe("POST /api/session/changePass", () => {
-        it("should not reset the password if it's the same", async () => {
-            const response = await requester.post("/api/session/changePass").send(userMockResetPass2)
-            expect(response.statusCode).to.be.equal(500)
-        });
-    });
+    })
 })

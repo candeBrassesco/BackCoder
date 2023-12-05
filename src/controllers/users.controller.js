@@ -23,6 +23,8 @@ export const registerUserController = async (req, res) => {
 }
 
 export const logoutUserController = async (req, res) => {
+    const { user } = req
+    const newDate = await userManager.changeLastConnection(user.email)
     req.session.destroy(error => {
         if (error) return res.status(500).json({ message: "Error login out" })
         res.clearCookie("token");

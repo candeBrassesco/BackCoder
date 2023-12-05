@@ -66,6 +66,15 @@ class UserManager {
             return error
         }
     }
+
+    async changeLastConnection (email) {
+        try {
+           const newDate = await usersRepository.changeLastConnection(email)
+           return newDate
+        } catch (error) {
+            return error
+        }
+    }
 }
 
 const userManager = new UserManager

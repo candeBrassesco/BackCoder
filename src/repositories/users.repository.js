@@ -153,6 +153,24 @@ class UsersRepository {
         }
     }
 
+    async changeLastConnection (email) {
+        try {
+            const user = await usersModel.findOne({email})
+            if (!user) {
+                CostumError.createError({
+                    name: ErrorName.USER_DATA_INCOMPLETE,
+                    message: ErrorMessage.USER_DATA_INCOMPLETE
+                })
+            }
+            const now = new Date()
+            const newDate = await usersModel.updateOne(await usersModel.updateOne({ _id: user._id }, { $set: {last_connection: now} })) 
+            return newDate
+        } catch (error) {
+            logger.error(error)
+            return error
+        }
+    }
+
     async findUsersCart(email) {
         try {
             const user = await usersModel.findOne({ email })

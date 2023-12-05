@@ -30,6 +30,22 @@ const usersSchema = new mongoose.Schema({
     cart: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: 'Carts'
+    },
+    documents: [
+        {
+            name: {
+                type: String,
+                requiered: true
+            },
+            reference: {
+                type: String,
+                required: true
+            }
+        }
+    ],
+    last_connection: {
+        type: Date,
+        default: null
     }
 })
 
