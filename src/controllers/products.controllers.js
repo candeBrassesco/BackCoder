@@ -26,16 +26,16 @@ export const getProductByIdController = async (req, res ) => {
 }
 
 export const addProductController = async ( req, res ) => {
-    const {title, description, price, code, owner} = req.body
+    const {title, description, price, code } = req.body
+    const {user} = req
     if ( !title || !description || !price || !code ) {
         return res.status(400).json({message: 'Some data is missing'})
     }
     try {
-        const userExists = await userManager.findUser(owner)
-        if(!userExists) {
-            res.status(400).json({message:'Inexistent user. Check the entered email'})
+        if(user.role === "user") {
+            res.send('Not authorized')
         }
-        if(userExists.role === "admin") {
+        if(user.role === "admin") {
             const newProd = {
                 ...req.body,
                 owner:"admin"
@@ -43,7 +43,11 @@ export const addProductController = async ( req, res ) => {
             const newProduct = await productManager.addProduct(newProd)
             res.status(200).json({message:'Product added', product: newProduct})
         }
-        const newProduct = await productManager.addProduct(req.body)
+        const newProd = {
+            ...req.body,
+            owner: user.email
+        }
+        const newProduct = await productManager.addProduct(newProd)
         res.status(200).json({message: 'Product added', product: newProduct})
     } catch (error) {
         res.status(500).json({error})
@@ -52,12 +56,25 @@ export const addProductController = async ( req, res ) => {
 
 export const deleteProductController = async ( req, res ) => {
     const {pid} = req.params
+    const {user} = req
     const product = await productManager.getProductById(pid)
     if (!product) {
        return res.status(400).json({ message:'Invalid ID' }) 
     }
+    if (user.role === "user") {
+        return res.send('Not authorized')
+    }
+    if (user.role === "premium" && product.owner !== user.email) {
+        return res.send('Not authorized')
+    }
     const deleteProduct= await productManager.deleteProduct(pid)
     res.status(200).json({message:'Product deleted', product: deleteProduct})    
+}
+
+export const getByCodeController = async ( req, res ) => {
+    const {code} = req.params
+    const product = await productManager.getProductByCode(code)
+    res.status(200).json({message: 'Product found', product: product})
 }
 
 export const updateProductController = async ( req, res ) => {

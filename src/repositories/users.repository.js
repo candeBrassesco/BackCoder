@@ -186,6 +186,15 @@ class UsersRepository {
             return error
         }
     }
+
+    async addFiles () {
+        try {
+
+        } catch (error) {
+            logger.error(error)
+            return error
+        }
+    }
 }
 
 const usersRepository = new UsersRepository()

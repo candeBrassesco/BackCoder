@@ -44,7 +44,7 @@ export const delOrUpAuth = async ( req, res, next ) => {
         const {pid} = req.params
         const product = await productManager.getProductById(pid)
         if(user.role === "user") {
-            res.status(401).json({message:'Not authorized'})
+            res.status(401).json({message: 'Not authorized'})
         }
         if(user.role ==="premium" && product.owner !== user.email) {
             res.status(401).json({message: 'Not authorized'})

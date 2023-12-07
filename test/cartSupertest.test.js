@@ -1,7 +1,7 @@
 import supertest from "supertest";
 import { expect } from "chai";
 
-const requester = supertest('http://localhost:8080')
+const requester = supertest.agent('http://localhost:8080')
 
 describe("Cart endpoints", () => {
     describe("GET /api/cart", () => {

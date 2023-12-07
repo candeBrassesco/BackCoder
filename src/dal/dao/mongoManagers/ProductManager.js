@@ -38,6 +38,15 @@ class ProductManager {
         }
     }
 
+    async getProductByCode (code) {
+        try {
+            const product = await productsRepository.findProductByCode(code)
+             return product
+        } catch (error) {
+            return error
+        }
+    }
+
     async updateProduct( id, obj ) {
         try {
             const updateProduct = await productsRepository.updateProduct( id, obj )

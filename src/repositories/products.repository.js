@@ -89,6 +89,22 @@ class ProductsRepository {
         }
     }
 
+    async findProductByCode(code) {
+        try {
+            const product = await productsModel.findOne({code: code})
+            if (!product) {
+                CostumError.createError({
+                    name: ErrorName.PRODUCT_DATA_INCOMPLETE,
+                    message: ErrorMessage.FIND_DATA_INCOMPLETE
+                })
+            }
+            return product
+        } catch (error) {
+            logger.error(error)
+            return error
+        }
+    }
+
     async updateProduct(id, obj) {
         try {
             const productExist = await productsModel.findById(id)

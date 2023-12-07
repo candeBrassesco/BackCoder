@@ -1,15 +1,16 @@
 import jwt from 'jsonwebtoken'
+import config from '../config.js'
 
 
-const JWT_SECRET_KEY = 'secretJWT'
+const JWT_SECRET_KEY = config.JWT_SECRET_KEY
 
 export const jwtValidation = ( req, res, next ) => {
     try {
         const token = req.cookies.token
+        console.log(token)
         const response = jwt.verify( token, JWT_SECRET_KEY )
         req.user = response.user
         next()
-
     } catch (error) {
         res.status(500).json({message: error})
     }

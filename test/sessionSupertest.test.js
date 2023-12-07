@@ -1,12 +1,13 @@
 import supertest from "supertest";
 import { expect } from "chai";
+import config from "../src/config.js";
 
-const requester = supertest('http://localhost:8080')
+const requester = supertest.agent('http://localhost:8080')
 
 describe("Session endpoints", () => {
     const userMockLogin = {
         email: "candelabrassesco99@gmail.com",
-        password: "candela99"
+        password: config.USER_TEST_PASSWORD
     }
     const userMockRegister = {
         first_name: "Maria",
@@ -28,8 +29,8 @@ describe("Session endpoints", () => {
     }
     const userMockResetPass2 = {
         email: "candelabrassesco99@gmail.com",
-        newPassword: "candela99",
-        repeatPassword: "candela99"
+        newPassword: config.USER_TEST_PASSWORD,
+        repeatPassword: config.USER_TEST_PASSWORD
     };
     describe("POST /api/session/register", () => {
         after(async () => {

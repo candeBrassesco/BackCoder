@@ -9,7 +9,6 @@ import MongoStore from 'connect-mongo'
 import './dal/db/dbConfig.js'
 import mongoose from 'mongoose'
 import passport from 'passport'
-import path from 'path'
 import './passport/passportStrategies.js'
 import config from './config.js'
 import swaggerJSDoc from 'swagger-jsdoc'
@@ -27,7 +26,7 @@ import mockRouter from './routes/mock.router.js'
 import loggerRouter from './routes/loggerTest.router.js'
 
 
-const app = express()
+export const app = express()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))

@@ -13,6 +13,10 @@ router.post("/resetPass", resetPasswordController )
 
 router.post('/changePass', changePassController)
 
+router.post('/premium/:uid', changeRolFormController)
+
+router.post("/:uid/documents")
+
 router.delete('/delete', deleteUserController)
 
 //register con Github
@@ -30,7 +34,7 @@ router.get("/current", passport.authenticate("jwt", {session:false}), (req, res)
     res.send(userDTO)
 })
 
-router.post('/premium/:uid', changeRolFormController)
+
 
 
 
