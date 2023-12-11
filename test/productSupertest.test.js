@@ -16,6 +16,12 @@ describe("Product endpoints", () => {
         stock: 20,
         code: "test"
     }
+    const productMockUpdate = {
+        stock: 34
+    }
+    const resetMockUpdate = {
+        stock: 52
+    }
     describe("GET /api/products", () => {
         it("should get all products",  async () => {
             const response = await requester.get("/api/products")
@@ -30,6 +36,12 @@ describe("Product endpoints", () => {
             expect(response._body.message).to.be.equal('Product added')
         })
     });
+    describe("GET /api/products/:pid", () => {
+        it("should get only one product", async () => {
+            const response = await requester.get("/api/products/654d45e44b3aabc32e2da47c")
+            expect(response._body.product).to.be.an('object')
+        })
+    });
     describe("DELETE /api/products/:pid", async () => {
         it("should delete the product", async () => {
            const product = await requester.get("/api/products/code/test")
@@ -38,12 +50,19 @@ describe("Product endpoints", () => {
            const response = await requester.delete("/api/products/" + id)
            expect(response.statusCode).to.be.equal(200)
         })
-    })
-    describe("GET /api/products/:pid", () => {
-        it("should get only one product", async () => {
-            const response = await requester.get("/api/products/64ed452c1b58a98a32eb1be6")
-            expect(response._body.product).to.be.an('object')
+        it("should return not authorized", async () => {
+            const response = await requester.delete("/api/products/64ed47bee3abb5b38a3a3e27")
+            console.log(response)
+        })
+    });
+    describe("PUT /api/products/:pid", () => {
+        after (async () => {
+            const res = await requester.put("/api/products/654d45e44b3aabc32e2da47c").send(resetMockUpdate)
+        })
+        it("should update the product stock", async () => {
+            const update = await requester.put("/api/products/654d45e44b3aabc32e2da47c").send(productMockUpdate)
+            console.log(update._body)
+            expect(update._body.product.stock).to.be.equal(34)
         })
     })
-    
 })

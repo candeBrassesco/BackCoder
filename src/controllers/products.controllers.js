@@ -57,17 +57,12 @@ export const addProductController = async ( req, res ) => {
 export const deleteProductController = async ( req, res ) => {
     const {pid} = req.params
     const {user} = req
+    console.log(user)
     const product = await productManager.getProductById(pid)
     if (!product) {
        return res.status(400).json({ message:'Invalid ID' }) 
     }
-    if (user.role === "user") {
-        return res.send('Not authorized')
-    }
-    if (user.role === "premium" && product.owner !== user.email) {
-        return res.send('Not authorized')
-    }
-    const deleteProduct= await productManager.deleteProduct(pid)
+    const deleteProduct = await productManager.deleteProduct(pid)
     res.status(200).json({message:'Product deleted', product: deleteProduct})    
 }
 
@@ -87,8 +82,9 @@ export const updateProductController = async ( req, res ) => {
     if (!product) {
          res.status(400).json({ message:'Invalid ID' }) 
     }
-    const productUpdated = await productManager.updateProduct(pid, productUpdate)
-    req.status(200).json({message:'Product updated', product: productUpdated})
+    const update = await productManager.updateProduct(pid, productUpdate)
+    const productUpdated = await productManager.getProductById(pid)
+    res.status(200).json({message:'Product updated', product: productUpdated})
 }
 
 export const viewProductsController = async ( req, res ) => {
