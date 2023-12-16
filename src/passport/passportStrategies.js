@@ -20,40 +20,40 @@ passport.use('login', new LocalStrategy({
     passReqToCallback: true
 },
     async (req, email, password, done) => {
-    try {
-        const user = await usersModel.findOne({ email })
-        logger.info('Login attempt')
-        if (!user) {
-            return done(null, false)
+        try {
+            const user = await usersModel.findOne({ email })
+            logger.info('Login attempt')
+            if (!user) {
+                return done(null, false)
+            }
+            const isPassword = await compareData(password, user.password)
+            if (!isPassword) {
+                return done(null, false)
+            }
+            const now = new Date()
+            await usersModel.updateOne({ _id: user._id }, { $set: { last_connection: now } })
+            done(null, user)
+        } catch (error) {
+            logger.error(error)
+            done(error)
         }
-        const isPassword = await compareData(password, user.password)
-        if (!isPassword) {
-            done(null, false)
-        }
-        const now = new Date()
-        await usersModel.updateOne({ _id: user._id }, { $set: {last_connection: now} })
-        done(null, user)
-    } catch (error) {
-        logger.error(error)
-        done(error)
-    }
-}))
+    }))
 
 passport.use('register', new LocalStrategy(
     async (req, email, password, done) => {
-    try {
-        const user = await usersModel.findOne({ email })
-        if (user) {
-            return done (null, false)
+        try {
+            const user = await usersModel.findOne({ email })
+            if (user) {
+                return done(null, false)
+            }
+            const hashPassword = await hashData(password)
+            const newUser = { ...req.body, password: hashPassword }
+            const userDB = await usersModel.create(newUser)
+            done(null, userDB)
+        } catch (error) {
+            done(error)
         }
-        const hashPassword = await hashData(password)
-        const newUser = { ...req.body, password: hashPassword }
-        const userDB = await usersModel.create(newUser)
-        done(null, userDB)
-    } catch (error) {
-        done(error)
     }
-}
 ))
 
 //github strategy

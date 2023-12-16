@@ -5,6 +5,7 @@ export const addProdAuth = async ( req, res, next ) => {
         const {user} = req
         if (user.role === "user") {
             res.status(401).json({message: 'Not authorized'})
+            return res.send('Not authorized')  
         }
         next()
     } catch (error) {
@@ -30,7 +31,8 @@ export const addProdCartAuth = async ( req, res, next ) => {
         const {pid} = req.params
         const product = await productManager.getProductById(pid)
         if (user.role === "admin" || user.email === product.owner) {
-           res.status(401).json({message:'Not authorized'})
+            res.status(401).json({message: 'Not authorized'})
+            return res.send('Not authorized')  
         }
         next()
     } catch (error) {

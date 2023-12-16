@@ -1,7 +1,7 @@
 import { Router } from "express";
-import passport from "passport";
 import { changePassController, changeRolFormController, deleteUserController, loginUserController, logoutUserController, registerUserController, resetPasswordController } from "../controllers/users.controller.js";
 import SessionDTO from "../dal/dto/sessions.dto.js";
+import passport from "passport";
 
 const router = Router()
 

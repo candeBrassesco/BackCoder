@@ -12,5 +12,5 @@ export default {
     NODE_ENV: process.env.NODE_ENV,
     GMAIL_USER: process.env.GMAIL_USER,
     GMAIL_PASSWORD: process.env.GMAIL_PASSWORD,
-    USER_TEST_PASSWORD: process.env.USER_TEST_PASSWORD
+    PREMIUM_TEST_PASSWORD: process.env.PREMIUM_TEST_PASSWORD
 }

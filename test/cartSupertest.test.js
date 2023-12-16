@@ -1,9 +1,37 @@
 import supertest from "supertest";
 import { expect } from "chai";
+import config from "../src/config.js";
 
 const requester = supertest.agent('http://localhost:8080')
 
 describe("Cart endpoints", () => {
+    const upCart = [
+        {
+            pid: "64ed47bee3abb5b38a3a3e27",
+            quantity: 2
+        },
+        {
+            pid: "64ed47e9e3abb5b38a3a3e2a",
+            quantity: 5
+        }
+    ]
+    const newQuant = {
+        quantity: 4
+    }
+    const backQuant = {
+        quantity: 1
+    }
+    const userMockLogin = {
+        email: "candelabrassesco99@gmail.com",
+        password: config.PREMIUM_TEST_PASSWORD
+    }
+    const adminMockLogin = {
+        email: "adminCoder@coder.com",
+        password: config.ADMIN_PASSWORD
+    }
+    const restockMock = {
+        stock: 38
+    }
     describe("GET /api/cart", () => {
         it("should get all carts", async () => {
             const response = await requester.get("/api/cart")
@@ -11,7 +39,6 @@ describe("Cart endpoints", () => {
         });
         it("should be an array", async () => {
             const response = await requester.get("/api/cart")
-            console.log(response._body)
             expect(response._body.carts).to.be.an('array')
         })
     });
@@ -25,106 +52,84 @@ describe("Cart endpoints", () => {
     });
     describe("GET /api/cart/:cid", () => {
         it("should get the cart", async () => {
-            const response = await requester.get("/api/cart/6531a6fd9c9be72dbdd4b9a2")
-            console.log(response._body)
+            const response = await requester.get("/api/cart/6568c8052a8978f670ee9d69")
             expect(response.statusCode).to.be.equal(200)
         });
     });
     describe("PUT /api/cart/:cid", () => {
         after(async () => {
-            await requester.delete("/api/cart/6560c9efb18af7ab3bd12176/product/64ed452c1b58a98a32eb1be6")
-            await requester.delete("/api/cart/6560c9efb18af7ab3bd12176/product/65305b95ea44194772ec7688")
+            await requester.delete("/api/cart/6568c8052a8978f670ee9d69/product/64ed47bee3abb5b38a3a3e27")
+            await requester.delete("/api/cart/6568c8052a8978f670ee9d69/product/64ed47e9e3abb5b38a3a3e2a")
         });
-        const upCart = [
-            {
-                pid: "64ed452c1b58a98a32eb1be6",
-                quantity: 2
-            },
-            {
-                pid: "65305b95ea44194772ec7688",
-                quantity: 5
-            }
-        ]
         it("should update a cart by id", async () => {
-            const response = await requester.put("/api/cart/6560c9efb18af7ab3bd12176").send(upCart)
-            console.log(response)
+            const response = await requester.put("/api/cart/6568c8052a8978f670ee9d69").send(upCart)
             expect(response.statusCode).to.be.equal(200)
         })
-    })
+    });
     describe("DELETE /api/cart/:cid", async () => {
         it("should delete one cart", async () => {
-            await requester.post("/api/cart")
             const allCarts = await requester.get("/api/cart")
             const carts = allCarts._body.carts
             const id = carts[carts.length - 1]._id
+            console.log(id)
             const response = await requester.delete("/api/cart/" + id)
             const newCarts = response._body.newCartsList.length
             expect(newCarts).to.be.equal(carts.length - 1)
         })
-    })
+    });
     describe("POST /api/cart/:cid/product/:pid", () => {
         after(async () => {
-            await requester.delete("/api/cart/654d1f8c8f4518328a4dd436/product/64ed452c1b58a98a32eb1be6")
+            await requester.get("/api/session/logout")
         })
         it("should add the chosen product to a cart", async () => {
-            const response = await requester.post("/api/cart/654d1f8c8f4518328a4dd436/product/64ed452c1b58a98a32eb1be6")
-            console.log(response)
+            await requester.post("/api/session/login").send(userMockLogin)
+            const response = await requester.post("/api/cart/6568c8052a8978f670ee9d69/product/64ed47bee3abb5b38a3a3e27")
             expect(response.statusCode).to.be.equal(200)
-        })
-    })
+        });
+        it("should return 'Not authorized'", async () => {
+            await requester.get("/api/session/logout")
+            const login = await requester.post("/api/session/login").send(adminMockLogin)
+            const response = await requester.post("/api/cart/6568c8052a8978f670ee9d69/product/64ed47bee3abb5b38a3a3e27")
+            expect(response.res.statusMessage).to.be.equal('Unauthorized')
+        })   
+    });
     describe("PUT /api/cart/:cid/product/:pid", () => {
-        const newQuant = {
-            quantity: 4
-        }
+        before(async () => {
+            await requester.post("/api/session/login").send(userMockLogin)
+        })
         it("should update the quantity of certain product", async () => {
-            const response = await requester.put("/api/cart/6533d7493a91900b27ce2753/product/64ed4704e3abb5b38a3a3e23").send(newQuant)
-            const cart = await requester.get("/api/cart/6533d7493a91900b27ce2753")
+            const response = await requester.put("/api/cart/6568c8052a8978f670ee9d69/product/64ed47bee3abb5b38a3a3e27").send(newQuant)
+            const cart = await requester.get("/api/cart/6568c8052a8978f670ee9d69")
             const quant1 = cart._body.cartById.products[0].quantity
-            console.log(quant1)
-            const backQuant = {
-                quantity: 3
-            }
-            const resetQuant = await requester.put("/api/cart/6533d7493a91900b27ce2753/product/64ed4704e3abb5b38a3a3e23").send(backQuant)
-            const cart2 = await requester.get("/api/cart/6533d7493a91900b27ce2753")
+            const resetQuant = await requester.put("/api/cart/6568c8052a8978f670ee9d69/product/64ed47bee3abb5b38a3a3e27").send(backQuant)
+            const cart2 = await requester.get("/api/cart/6568c8052a8978f670ee9d69")
             const quant2 = cart2._body.cartById.products[0].quantity
-            console.log(quant2)
             expect(quant2).to.not.be.equal(quant1)
         })
     })
     describe("DELETE /api/cart/:cid/product/:pid", () => {
         it("should delete the product on cart", async () => {
-            const response = await requester.delete("/api/cart/6533d7493a91900b27ce2753/product/64ed4704e3abb5b38a3a3e23")
-            const cart = await requester.get("/api/cart/6533d7493a91900b27ce2753")
+            const response = await requester.delete("/api/cart/6568c8052a8978f670ee9d69/product/64ed47bee3abb5b38a3a3e27")
+            const cart = await requester.get("/api/cart/6568c8052a8978f670ee9d69")
             console.log(cart._body)
-            const quant = {
-                quantity: 3
-            }
-            const reset = await requester.put("/api/cart/6533d7493a91900b27ce2753/product/64ed4704e3abb5b38a3a3e23").send(quant)
+            const reset = await requester.put("/api/cart/6568c8052a8978f670ee9d69/product/64ed47bee3abb5b38a3a3e27").send(backQuant)
             expect(cart._body.cartById.products).to.have.lengthOf(0)
         })
         it("should recieve an error when product is not on cart", async () => {
-            const response = await requester.delete("/api/cart/6533d7493a91900b27ce2753/product/654d45e44b3aabc32e2da47c")
+            const response = await requester.delete("/api/cart/6568c8052a8978f670ee9d69/product/64ed48cee3abb5b38a3a3e32")
             expect(response.statusCode).to.be.equal(500)
         })
     })
     describe("GET /api/cart/:cid/purchase", () => {
-        it("should get the cart", async () => {
-            const response = await requester.get("/api/cart//purchase")
+        after(async () => {
+            await requester.get("/api/session/logout")
+            await requester.post("/api/session/login").send(adminMockLogin)
+            await requester.put("/api/products/64ed47bee3abb5b38a3a3e27").send(restockMock)
+            await requester.get("/api/session/logout")
         })
-
+        it("should get the cart ticket", async () => {
+            const response = await requester.get("/api/cart/6568c8052a8978f670ee9d69/purchase")
+            expect(response._body.purchase.ticket.amount).to.not.be.equal(0)
+        })
     })
-
-    /*describe("POST /api/cart/:cid/product/:pid", () => {
-        const userMock = {
-            email: "candelabrassesco99gmail.com",
-            password: "candela99"
-        }
-        it("should add the chosen product to a cart", async () => {
-            await requester.post("/api/session/login").send(userMock)
-            const response = await requester.post("/api/cart/6568c8052a8978f670ee9d69/product/64ed452c1b58a98a32eb1be6")
-            await requester.delete("/api/cart/6568c8052a8978f670ee9d69/product/64ed452c1b58a98a32eb1be6")
-            console.log(response)
-            expect(response.statusCode).to.be.equal(200)
-        })
-    })*/
-})
+})  

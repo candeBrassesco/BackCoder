@@ -5,6 +5,5 @@ export const mockingProductsController = async ( req, res ) => {
     for(let i=0; i<100; i++) {
         products.push(generateProduct())
     }
-
     res.status(200).json({status: 'succes', payload: products})
 }

@@ -1,4 +1,5 @@
 import userManager from "../dal/dao/mongoManagers/UserManager.js";
+import { usersModel } from "../dal/db/models/users.models.js";
 import { generateToken, compareData } from "../utils.js";
 import { transporter } from "../nodemailer.js";
 
@@ -20,6 +21,26 @@ export const registerUserController = async (req, res) => {
     } else {
         res.redirect("/views/registerError")
     }
+}
+
+// login without passport
+export const loginUserController = async (req, res) => {
+    const { email, password } = req.body
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Some data is missing!' })
+    }
+    const user = await userManager.findUser(email)
+    console.log(user)
+    if (!user) {
+        return res.redirect("/api/views/loginError")
+    }
+    const isPasswordValid = await compareData(password, user.password)
+    if (!isPasswordValid) {
+        return res.redirect("/api/views/loginError")
+    }
+    const now = new Date()
+    await usersModel.updateOne({ _id: user._id }, { $set: { last_connection: now } })
+    res.redirect('/products')
 }
 
 export const logoutUserController = async (req, res) => {
@@ -99,28 +120,6 @@ export const deleteUserController = async (req, res) => {
     const {email} = req.body
     const userDeleted = await userManager.deleteUser(email)
     res.status(200).json({message: "User deleted"})
-}
-
-// login without passport
-export const loginUserController = async (req, res) => {
-    const { email, password } = req.body
-
-    if (!email || !password) {
-        return res.status(400).json({ message: 'Some data is missing!' })
-    }
-
-    const user = await userManager.findUser(email)
-    if (!user) {
-        return res.redirect("/api/views/loginError")
-    }
-
-    const isPasswordValid = await compareData(password, user.password)
-
-    if (!isPasswordValid) {
-        return res.redirect("/api/views/loginError")
-    }
-
-    res.redirect('/products')
 }
 
 export const loginViewController = (req, res) => {

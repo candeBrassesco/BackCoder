@@ -7,7 +7,7 @@ const requester = supertest.agent('http://localhost:8080')
 describe("Session endpoints", () => {
     const userMockLogin = {
         email: "candelabrassesco99@gmail.com",
-        password: config.USER_TEST_PASSWORD
+        password: config.PREMIUM_TEST_PASSWORD
     }
     const userMockRegister = {
         first_name: "Maria",
@@ -22,19 +22,13 @@ describe("Session endpoints", () => {
     const userEmail2 = {
         email: "candelabrassesco99@gmail.com"
     }
-    const userMockResetPass = {
-        email: "candelabrassesco99@gmail.com",
-        newPassword: "cande123",
-        repeatPassword: "cande123"
-    }
-    const userMockResetPass2 = {
-        email: "candelabrassesco99@gmail.com",
-        newPassword: config.USER_TEST_PASSWORD,
-        repeatPassword: config.USER_TEST_PASSWORD
-    };
     describe("POST /api/session/register", () => {
         after(async () => {
             await requester.delete("/api/session/delete").send(userEmail)
+            const allCarts = await requester.get("/api/cart")
+            const carts = allCarts._body.carts
+            const id = carts[carts.length - 1]._id
+            await requester.delete("/api/cart/" + id)  
         })
         it("should create a new user and set a token on cookies", async () => {
             const response = await requester.post("/api/session/register").send(userMockRegister)

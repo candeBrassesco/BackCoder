@@ -5,9 +5,9 @@ import config from "../src/config.js";
 const requester = supertest.agent('http://localhost:8080')
 
 describe("Product endpoints", () => {
-    const userMockLogin = {
+    const premiumMockLogin = {
         email: "candelabrassesco99@gmail.com",
-        password: config.USER_TEST_PASSWORD
+        password: config.PREMIUM_TEST_PASSWORD
     }
     const productMockPost = {
         title: "test",
@@ -30,7 +30,7 @@ describe("Product endpoints", () => {
     });
     describe("POST /api/products", () => {
         it("should add a new product to the collection", async () => {
-            const login = await requester.post("/api/session/login").send(userMockLogin)
+            const login = await requester.post("/api/session/login").send(premiumMockLogin)
             const response = await requester.post("/api/products").send(productMockPost)
             expect(response.statusCode).to.be.equal(200)
             expect(response._body.message).to.be.equal('Product added')
@@ -52,7 +52,8 @@ describe("Product endpoints", () => {
         })
         it("should return not authorized", async () => {
             const response = await requester.delete("/api/products/64ed47bee3abb5b38a3a3e27")
-            console.log(response)
+            console.log(response.res.statusMessage)
+            expect(response.res.statusMessage).to.be.equal('Unauthorized')
         })
     });
     describe("PUT /api/products/:pid", () => {
@@ -63,6 +64,10 @@ describe("Product endpoints", () => {
             const update = await requester.put("/api/products/654d45e44b3aabc32e2da47c").send(productMockUpdate)
             console.log(update._body)
             expect(update._body.product.stock).to.be.equal(34)
+        })
+        it("should return not authorized", async () => {
+            const update = await requester.put("/api/products/64ed47bee3abb5b38a3a3e27").send(productMockUpdate)
+            expect(update.statusCode).to.be.equal(401)
         })
     })
 })
