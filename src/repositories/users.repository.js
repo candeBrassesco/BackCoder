@@ -1,8 +1,8 @@
+import { usersModel } from "../dal/db/models/users.models.js";
+import { hashData } from "../utils.js";
+import { ErrorMessage, ErrorName } from "../errors/error.enum.js";
 import cartManager from "../dal/dao/mongoManagers/CartManager.js";
 import CostumError from "../errors/CostumError.js";
-import { usersModel } from "../dal/db/models/users.models.js";
-import { compareData, hashData } from "../utils.js";
-import { ErrorMessage, ErrorName } from "../errors/error.enum.js";
 import logger from "../winston.js";
 
 
@@ -43,6 +43,44 @@ class UsersRepository {
         }
     }
 
+    async getUsers(limit, page, query) {
+        try {
+            const options = {
+                limit: limit,
+                page: page,
+                lean: true
+            }
+            const result = await usersModel.paginate(
+                query, 
+                options
+            )
+            if (!result || !options) {
+                CostumError.createError({
+                    name: ErrorName.USER_DATA_INCOMPLETE,
+                    message: ErrorMessage.USER_DATA_INCOMPLETE
+                })
+            }
+            const filteredResult = result.docs.filter(user => user.role !== 'admin');
+            const info = {
+                status: "success",
+                payload: filteredResult,
+                totalPages: result.totalPages,
+                prevPage: result.prevPage,
+                nextPage: result.nextPage,
+                page: result.page,
+                hasPrevPage: result.hasPrevPage,
+                hasNextPage: result.hasNextPage,
+                prevLink: result.hasPrevPage === false ? null : `http://localhost:8080/api/users?page=${result.prevPage}`,
+                nextLink: result.hasPrevPage === false ? null : `http://localhost:8080/api/users?page=${result.nextPage}`
+            }
+            return info 
+        } catch (error) {
+            const resultError = { status: "error" }
+            logger.error(error)
+            return resultError
+        }
+    }
+
     async findUser(email) {
         try {
             const user = await usersModel.findOne({ email })
@@ -59,7 +97,7 @@ class UsersRepository {
         }
     }
 
-    async deleteUser (email) {
+    async deleteUserForTest (email) {
         try {
             const user = await usersModel.findOne({email})
             if (!user) {
@@ -76,6 +114,31 @@ class UsersRepository {
         }
     }
 
+    async deleteUser (email) {
+        try {
+            const user = await usersModel.findOne({email})
+            if(!user) {
+                CostumError.createError({
+                    name: ErrorName.USER_DATA_INCOMPLETE,
+                    message: ErrorMessage.USER_DATA_INCOMPLETE
+                })
+            }
+            const uid = user._id
+            const lastConnection = user.last_connection
+            const now = new Date()
+            const difference = now - new Date(lastConnection)
+            if(difference < 1000 * 60 * 60 * 24 * 2) {
+                CostumError.createError({
+                    name: ErrorName.USER_IS_ACTIVE,
+                    message: ErrorMessage.USER_IS_ACTIVE
+                })
+            }
+            await usersModel.findByIdAndDelete(uid)
+        } catch (error) {
+            logger.error(error)
+            return error
+        }
+    }
 
     async updateOne(idUser, idCart) {
         try {
@@ -181,15 +244,6 @@ class UsersRepository {
                 })
             }
             return user.cart
-        } catch (error) {
-            logger.error(error)
-            return error
-        }
-    }
-
-    async addFiles () {
-        try {
-
         } catch (error) {
             logger.error(error)
             return error

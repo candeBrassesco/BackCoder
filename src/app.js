@@ -1,18 +1,18 @@
-import express from 'express'
-import handlebars from 'express-handlebars'
 import { __dirname } from './utils.js'
 import { Server } from "socket.io"
+import express from 'express'
+import handlebars from 'express-handlebars'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import FileStore from 'session-file-store'
 import MongoStore from 'connect-mongo'
-import './dal/db/dbConfig.js'
 import mongoose from 'mongoose'
 import passport from 'passport'
-import './passport/passportStrategies.js'
 import config from './config.js'
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUiExpress from 'swagger-ui-express'
+import './dal/db/dbConfig.js'
+import './passport/passportStrategies.js'
 
 //routers
 import productsRouter from './routes/products.router.js'
@@ -20,7 +20,7 @@ import cartRouter from './routes/cart.router.js'
 import productsViewRouter from './routes/productsView.router.js'
 import viewsRouter from './routes/views.router.js'
 import cartViewRouter from './routes/cartView.router.js'
-import sessionRouter from './routes/sessions.router.js'
+import usersRouter from './routes/users.router.js'
 import chatRouter from './routes/chat.router.js'
 import mockRouter from './routes/mock.router.js'
 import loggerRouter from './routes/loggerTest.router.js'
@@ -39,9 +39,16 @@ app.use(express.static(__dirname + '/public', {
 }));
 
 //handlebars setting
-app.engine('handlebars', handlebars.engine());
+app.engine('handlebars', handlebars.engine({
+  helpers: {
+    isEqual: function(a,b, opts) {
+      return a === b ? opts.fn(this) : opts.inverse(this)
+    }
+  }
+}));
 app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/views');
+
 
 //cookies
 app.use(cookieParser(config.SECRET_COOKIES))
@@ -88,18 +95,17 @@ app.use("/mockingproducts", mockRouter)
 
 // handlebars routes
 app.use("/api/views", viewsRouter)
-app.use("/api/session", sessionRouter)
+app.use("/api/users", usersRouter)
 app.use("/carts", cartViewRouter)
 app.use("/products", productsViewRouter)
 app.use("/chat", chatRouter)
 app.use("/loggerTest", loggerRouter)
 
-
 const PORT = config.PORT
-// escucha solicitudes del puerto 8080
+
+// listen requests on PORT = 8080
 const httpServer = app.listen(PORT, () => {
   console.log(`Listening on ${PORT}`)
 })
-
 
 export const socketServer = new Server(httpServer)

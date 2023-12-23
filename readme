@@ -4,6 +4,9 @@ user register: localhost:8080/api/views/register
 
 user login: localhost:8080/api/views/login
 
+user list: localhost:8080/api/views/users
+
+
 Admin user: 
 email: adminCoder@coder.com
 password: adminCoder123

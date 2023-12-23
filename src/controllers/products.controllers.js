@@ -1,6 +1,7 @@
 import productManager from "../dal/dao/mongoManagers/ProductManager.js";
 import userManager from "../dal/dao/mongoManagers/UserManager.js";
 
+// get all products
 export const getProductsController = async ( req, res ) => {
     try {
         const {limit = 10, page = 1, sort, ...query} = req.query
@@ -11,6 +12,7 @@ export const getProductsController = async ( req, res ) => {
     }
 }
 
+// get products by ID
 export const getProductByIdController = async (req, res ) => {
     const {pid} = req.params
     try {
@@ -25,6 +27,7 @@ export const getProductByIdController = async (req, res ) => {
     }
 }
 
+// add a new product to the collection
 export const addProductController = async ( req, res ) => {
     const {title, description, price, code } = req.body
     const {user} = req
@@ -54,6 +57,7 @@ export const addProductController = async ( req, res ) => {
     }
 }
 
+// delete product of collection
 export const deleteProductController = async ( req, res ) => {
     const {pid} = req.params
     const {user} = req
@@ -66,12 +70,14 @@ export const deleteProductController = async ( req, res ) => {
     res.status(200).json({message:'Product deleted', product: deleteProduct})    
 }
 
+// get product by code (only used on supertest)
 export const getByCodeController = async ( req, res ) => {
     const {code} = req.params
     const product = await productManager.getProductByCode(code)
     res.status(200).json({message: 'Product found', product: product})
 }
 
+// update product by ID
 export const updateProductController = async ( req, res ) => {
     const productUpdate = req.body
     const {pid} = req.params
@@ -87,6 +93,7 @@ export const updateProductController = async ( req, res ) => {
     res.status(200).json({message:'Product updated', product: productUpdated})
 }
 
+// products' handlebars view
 export const viewProductsController = async ( req, res ) => {
     const {user} = req
     const {limit = 10, page = 1, sort, ...query } = req.query
@@ -98,6 +105,7 @@ export const viewProductsController = async ( req, res ) => {
     res.render("products", {products: productsList, user: userLogged.toObject()})
 }
 
+// add products' handlebars view
 export const viewNewProductsController = async ( req, res ) => {
     res.render("newProducts")
 }

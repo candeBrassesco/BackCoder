@@ -1,9 +1,13 @@
 import { Router } from "express";
-import { changePassController, changeRolFormController, deleteUserController, loginUserController, logoutUserController, registerUserController, resetPasswordController } from "../controllers/users.controller.js";
+import { changePassController, changeRolFormController, deleteUserController, deleteUserforTestController, getUsersController, loginUserController, logoutUserController, registerUserController, resetPasswordController } from "../controllers/users.controller.js";
 import SessionDTO from "../dal/dto/sessions.dto.js";
 import passport from "passport";
 
 const router = Router()
+
+router.get('/', getUsersController )
+
+router.post('/mail', deleteUserController)
 
 router.post('/register', registerUserController)
 
@@ -15,9 +19,7 @@ router.post('/changePass', changePassController)
 
 router.post('/premium/:uid', changeRolFormController)
 
-router.post("/:uid/documents")
-
-router.delete('/delete', deleteUserController)
+router.delete('/delete', deleteUserforTestController)
 
 //register con Github
 router.get('/registerGithub', passport.authenticate("github", { scope: [ 'user:email' ] }))
@@ -33,10 +35,6 @@ router.get("/current", passport.authenticate("jwt", {session:false}), (req, res)
     const userDTO = new SessionDTO(req.user)
     res.send(userDTO)
 })
-
-
-
-
 
 
 export default router

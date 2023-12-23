@@ -61,7 +61,7 @@ passport.use('register', new LocalStrategy(
 passport.use(new GithubStrategy({
     clientID: 'Iv1.951aef74a091d5dd',
     clientSecret: 'bd230677e69cc71a930aec10643d7a20cefee8c2',
-    callbackURL: "http://localhost:8080/api/session/github"
+    callbackURL: "http://localhost:8080/api/users/github"
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         const user = await usersModel.findOne({ email: profile._json.email })

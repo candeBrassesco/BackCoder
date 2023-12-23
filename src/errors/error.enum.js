@@ -10,7 +10,8 @@ export const ErrorName = {
     STOCKPROD_DATA_INCOMPLETE: "Error on product stock",
     USER_DATA_INCOMPLETE: "Error on user",
     REGISTER_DATA_INCOMPLETE: "Error on register",
-    RESETPASS_DATA_INCOMPLETE: "Error on new password"
+    RESETPASS_DATA_INCOMPLETE: "Error on new password",
+    USER_IS_ACTIVE: "Error on last connection"
 }
 
 export const ErrorMessage = {
@@ -29,5 +30,6 @@ export const ErrorMessage = {
     USERCART_DATA_INCOMPLETE: "Request failed. Inexistent user or cart ID",
     REGISTER_DATA_INCOMPLETE: "Request failed. User already exists",
     RESETPASS_DATA_INCOMPLETE: "Request failed. The passwords entered are different",
-    NEWPASS_DATA_INCOMPLETE: "Request failed. The actual and the new password are the same."
+    NEWPASS_DATA_INCOMPLETE: "Request failed. The actual and the new password are the same",
+    USER_IS_ACTIVE: "Request failed. User can not be deleted"
 }

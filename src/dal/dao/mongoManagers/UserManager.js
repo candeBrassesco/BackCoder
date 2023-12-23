@@ -13,10 +13,28 @@ class UserManager {
        }
     }
 
+    async getUsers (limit, page, query) {
+        try {
+            const users = await usersRepository.getUsers(limit, page, query)
+            return users
+        } catch (error) {
+            return error
+        }
+    }
+
     async findUser(email) {
         try {
             const user = await usersRepository.findUser(email)
             return user
+        } catch (error) {
+            return error
+        }
+    }
+
+    async deleteUserForTest(email) {
+        try {
+            const delUser = await usersRepository.deleteUserForTest(email)
+            return delUser
         } catch (error) {
             return error
         }

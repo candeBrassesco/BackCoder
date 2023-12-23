@@ -4,7 +4,7 @@ const buttons = document.querySelectorAll('button[type="submit"]');
 
 
 buttons.forEach((button) => {
-    button.addEventListener("click", (e) =>{
+    button.addEventListener("click", (e) => {
         e.preventDefault();
         const product = {
             id: button.id
@@ -12,3 +12,8 @@ buttons.forEach((button) => {
         socketClient.emit("prodToCart", product)
     })
 })
+
+const div = document.getElementById("admin");
+if (div) {
+  div.setAttribute("style", "display: block;");
+}

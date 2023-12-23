@@ -79,23 +79,23 @@ describe("Cart endpoints", () => {
     });
     describe("POST /api/cart/:cid/product/:pid", () => {
         after(async () => {
-            await requester.get("/api/session/logout")
+            await requester.get("/api/users/logout")
         })
         it("should add the chosen product to a cart", async () => {
-            await requester.post("/api/session/login").send(userMockLogin)
+            await requester.post("/api/users/login").send(userMockLogin)
             const response = await requester.post("/api/cart/6568c8052a8978f670ee9d69/product/64ed47bee3abb5b38a3a3e27")
             expect(response.statusCode).to.be.equal(200)
         });
         it("should return 'Not authorized'", async () => {
-            await requester.get("/api/session/logout")
-            const login = await requester.post("/api/session/login").send(adminMockLogin)
+            await requester.get("/api/users/logout")
+            const login = await requester.post("/api/users/login").send(adminMockLogin)
             const response = await requester.post("/api/cart/6568c8052a8978f670ee9d69/product/64ed47bee3abb5b38a3a3e27")
             expect(response.res.statusMessage).to.be.equal('Unauthorized')
         })   
     });
     describe("PUT /api/cart/:cid/product/:pid", () => {
         before(async () => {
-            await requester.post("/api/session/login").send(userMockLogin)
+            await requester.post("/api/users/login").send(userMockLogin)
         })
         it("should update the quantity of certain product", async () => {
             const response = await requester.put("/api/cart/6568c8052a8978f670ee9d69/product/64ed47bee3abb5b38a3a3e27").send(newQuant)
@@ -122,10 +122,10 @@ describe("Cart endpoints", () => {
     })
     describe("GET /api/cart/:cid/purchase", () => {
         after(async () => {
-            await requester.get("/api/session/logout")
-            await requester.post("/api/session/login").send(adminMockLogin)
+            await requester.get("/api/users/logout")
+            await requester.post("/api/users/login").send(adminMockLogin)
             await requester.put("/api/products/64ed47bee3abb5b38a3a3e27").send(restockMock)
-            await requester.get("/api/session/logout")
+            await requester.get("/api/users/logout")
         })
         it("should get the cart ticket", async () => {
             const response = await requester.get("/api/cart/6568c8052a8978f670ee9d69/purchase")

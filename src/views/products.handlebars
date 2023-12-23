@@ -1,9 +1,18 @@
 <h3>¡Welcome {{user.first_name}}!</h3>
 
 <button onclick="location.href='/api/views/profile'">Your profile</button>
-<button onclick="location.href='/api/session/logout'">Log out</button>
-
+<button onclick="location.href='/api/users/logout'">Log out</button>
 <button onclick="location.href='/products/addProd'">Add new products</button>
+
+{{#isEqual user.role "admin"}}
+    <div id="checkUsers">
+       <button onclick="location.href='/api/views/users'">Check users</button>
+    </div>
+{{else}}
+    <div id="checkUsers">
+       <button onclick="location.href='/api/views/users'" style="display:none">Check users</button>
+    </div>
+{{/isEqual}}
 
 {{#each products}}
 <form id="prodForm" action="/api/cart/{{cartId}}/product/{{id}}" method="POST">
@@ -13,7 +22,7 @@
     <p>code: {{code}}</p>
     <p>stock: {{stock}}</p>
     <p>thumbnails: {{thumbnails}}</p>
-    <p>id: <p id="pid">{{id}}</p></p>
+    <p id="pid">id: {{id}}</p>
     <button type="submit" id="{{id}}">Add to cart</button>
 </form>
 {{/each}}

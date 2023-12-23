@@ -1,0 +1,10 @@
+<h2>All users</h2>
+
+{{#each users}}
+<form id="userForm" method="POST" action="/api/users/{{mail}}">
+    <h3>name: {{name}}</h3>
+    <p>email: {{mail}}</p>
+    <p>role: {{role}}</p>
+    <button type="submit" id="{{mail}}">Delete user</button>
+</form>
+{{/each}}

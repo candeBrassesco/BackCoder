@@ -30,7 +30,7 @@ describe("Product endpoints", () => {
     });
     describe("POST /api/products", () => {
         it("should add a new product to the collection", async () => {
-            const login = await requester.post("/api/session/login").send(premiumMockLogin)
+            const login = await requester.post("/api/users/login").send(premiumMockLogin)
             const response = await requester.post("/api/products").send(productMockPost)
             expect(response.statusCode).to.be.equal(200)
             expect(response._body.message).to.be.equal('Product added')
