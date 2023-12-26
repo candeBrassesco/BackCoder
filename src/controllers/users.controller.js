@@ -147,17 +147,16 @@ export const deleteUserforTestController = async (req, res) => {
 // delete user
 export const deleteUserController = async (req,res) => {
     const {mail} = req.params
-    console.log(mail)
     const userExists = await userManager.findUser(mail)
     if (!userExists) {
         res.status(400).json({ message: 'User not found' })
     }
-    const sendEmailAndCookie = async () => {
+    const sendEmail = async () => {
         const messagesOpt = {
             from: "coderback99@gmail.com",
             to: mail,
             subject: "User deleted",
-            html: `<p> Dear ${mail}: Your user has been deleted due to inactivity.</p>`,
+            html: `<p> Dear user: Your user has been deleted due to inactivity.</p>`,
         };
         try {
             await transporter.sendMail(messagesOpt);
@@ -167,9 +166,9 @@ export const deleteUserController = async (req,res) => {
         }
     }
     try {
-        await sendEmailAndCookie()
-        const userDeleted = await userManager.deleteUser(mail)
-        res.send(`User ${mail} deleted`)
+        await sendEmail()
+        await userManager.deleteUser(mail)
+        res.send(`User deleted`)
     } catch (error) {
         logger.error(error)
         res.status(500).json({ message: error })

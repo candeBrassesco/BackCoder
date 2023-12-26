@@ -7,7 +7,7 @@ const router = Router()
 
 router.get('/', getUsersController )
 
-router.post('/mail', deleteUserController)
+router.post('/delete/:mail', deleteUserController)
 
 router.post('/register', registerUserController)
 
