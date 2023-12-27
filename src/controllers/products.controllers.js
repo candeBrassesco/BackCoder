@@ -1,5 +1,7 @@
+import { transporter } from "../nodemailer.js";
 import productManager from "../dal/dao/mongoManagers/ProductManager.js";
 import userManager from "../dal/dao/mongoManagers/UserManager.js";
+import logger from "../winston.js";
 
 // get all products
 export const getProductsController = async ( req, res ) => {
@@ -60,14 +62,37 @@ export const addProductController = async ( req, res ) => {
 // delete product of collection
 export const deleteProductController = async ( req, res ) => {
     const {pid} = req.params
-    const {user} = req
-    console.log(user)
+    const mail = pid.owner
     const product = await productManager.getProductById(pid)
     if (!product) {
        return res.status(400).json({ message:'Invalid ID' }) 
     }
-    const deleteProduct = await productManager.deleteProduct(pid)
-    res.status(200).json({message:'Product deleted', product: deleteProduct})    
+    const sendEmail = async () => {
+        const messagesOpt = {
+            from: "coderback99@gmail.com",
+            to: mail,
+            subject: "Product deleted",
+            html: `<p> Dear owner: Your product ID:${pid} has been deleted.</p>`,
+        };
+        try {
+            await transporter.sendMail(messagesOpt);
+        } catch (error) {
+            logger.error(error);
+            res.status(500).json({ message: "Error sending email" });
+        }
+    }
+    try {
+        if(product.owner && product.owner !== "admin") {
+            await sendEmail()
+            const deleteProduct = await productManager.deleteProduct(pid)
+            return res.status(200).json({message:'Product deleted', product: deleteProduct})    
+        }
+        const deleteProduct = await productManager.deleteProduct(pid)
+        res.status(200).json({message:'Product deleted', product: deleteProduct})
+    } catch (error) {
+        logger.error(error)
+        res.status(500).json({message: error})
+    }  
 }
 
 // get product by code (only used on supertest)
@@ -100,7 +125,7 @@ export const viewProductsController = async ( req, res ) => {
     const products = await productManager.getProducts(limit, page, sort, query)
     const userLogged = await userManager.findUser(user.email)
     const productsList = products.payload.map( product => {
-        return {...product, cartId: userLogged.cart}
+        return {...product, cartId: userLogged.cart, role: userLogged.role}
     })
     res.render("products", {products: productsList, user: userLogged.toObject()})
 }

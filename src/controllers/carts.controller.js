@@ -1,5 +1,7 @@
 import cartManager from "../dal/dao/mongoManagers/CartManager.js";
+import { cartsModel } from "../dal/db/models/carts.models.js";
 
+// get all carts
 export const getCartsController = async ( req, res ) => {
     try {
         const carts = await cartManager.getCarts()
@@ -9,6 +11,7 @@ export const getCartsController = async ( req, res ) => {
     }
 }
 
+// get one cart by ID
 export const  getCartByIdController = async ( req, res ) => {
     const {cid} = req.params
     try {
@@ -19,6 +22,7 @@ export const  getCartByIdController = async ( req, res ) => {
     }
 }
 
+// add a new cart
 export const addCartController = async ( req, res ) => {
     try {
         const newCart = await cartManager.addCart(req.body)
@@ -28,6 +32,7 @@ export const addCartController = async ( req, res ) => {
     }
 }
 
+// add product to a certain cart
 export const addProductToCartController = async ( req, res ) => {
     const {cid, pid} = req.params
     try {
@@ -38,6 +43,7 @@ export const addProductToCartController = async ( req, res ) => {
     }
 }
 
+// update cart
 export const updateCartController = async ( req, res ) => {
     const {cid} = req.params
     const products = req.body
@@ -50,6 +56,7 @@ export const updateCartController = async ( req, res ) => {
     }
 }
 
+// update quantity of a product on cart
 export const updateQuantityController = async ( req, res ) => {
     const {cid, pid} = req.params
     const quantity = req.body
@@ -62,6 +69,7 @@ export const updateQuantityController = async ( req, res ) => {
     }
 }
 
+// delete a cart by ID
 export const deleteCartController = async ( req, res ) => {
     const {cid} = req.params
     try {
@@ -73,6 +81,7 @@ export const deleteCartController = async ( req, res ) => {
     }
 }
 
+// delete products on cart
 export const deleteProductOnCartController = async ( req, res ) => {
     const {cid, pid} = req.params
     try {
@@ -88,17 +97,30 @@ export const deleteProductOnCartController = async ( req, res ) => {
     }
 }
 
+// carts' handlebars view
 export const viewCartControler = async ( req, res ) => {
     const {cid} = req.params
     try {
         const cart = await cartManager.getCartsById(cid)
         const cartProducts = cart.products
-        res.render("cart", {products: cartProducts})
+        const productList = cartProducts.map(product => {
+            return {
+                title: product.pid.title,
+                price: product.pid.price,
+                code: product.pid.code,
+                thumbnails: product.pid.thumbnails,
+                quantity: product.quantity
+              };
+        })
+        console.log(cartProducts[0].pid)
+        console.log(productList)
+        res.render("cart", {products: productList})
     } catch (error) {
         res.status(500).json({error})
     }
 }
 
+// purchase cart and generate a ticket
 export const purchaseCartController = async ( req, res ) => {
     const {cid} = req.params
     const {user} = req

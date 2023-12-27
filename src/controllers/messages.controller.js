@@ -2,7 +2,7 @@ import messageManager from "../dal/dao/mongoManagers/MessageManager.js";
 import logger from "../winston.js";
 import { socketServer } from "../app.js";
 
-
+// get all messages
 export const getMessagesController = async ( req, res ) => {
     const messages = await messageManager.getMessages()
 

@@ -12,7 +12,7 @@ router.get('/code/:code', getByCodeController)
 
 router.post('/', addProdAuth, addProductController)
 
-router.delete('/:pid', delOrUpAuth, deleteProductController)
+router.post('/:pid', delOrUpAuth, deleteProductController)
 
 router.put('/:pid', delOrUpAuth, updateProductController)
 

@@ -1,10 +1,15 @@
+<h2>Your cart:</h2>
+
 {{#each products}}
 <div>
     <h3> {{title}}</h3>
-    <p>description: {{description}}</p>
     <p>price: {{price}}</p>
-    <p>stock: {{stock}}</p>
     <p>code: {{code}}</p>
     <p>thumbnails: {{thumbnails}}</p>
+    <p>quantity: {{quantity}}</p>
 </div>
 {{/each}}
+
+<form id="purchaseForm" action="" method="">
+    <button id="purchase" type="submit">Purchase cart</button>
+</form>

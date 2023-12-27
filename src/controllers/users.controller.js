@@ -156,7 +156,7 @@ export const deleteUserController = async (req,res) => {
             from: "coderback99@gmail.com",
             to: mail,
             subject: "User deleted",
-            html: `<p> Dear user: Your user has been deleted due to inactivity.</p>`,
+            html: `<p> Dear ${mail}: Your user has been deleted due to inactivity.</p>`,
         };
         try {
             await transporter.sendMail(messagesOpt);

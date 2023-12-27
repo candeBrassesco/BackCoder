@@ -41,8 +41,14 @@ app.use(express.static(__dirname + '/public', {
 //handlebars setting
 app.engine('handlebars', handlebars.engine({
   helpers: {
-    isEqual: function(a,b, opts) {
+    isEqual: function(a, b, opts) {
       return a === b ? opts.fn(this) : opts.inverse(this)
+    },
+    areEqual: function(a, b, c, opts) {
+      return c === a || c === b ? opts.fn(this) : opts.inverse(this)
+    },
+    exists: function(a, opts) {
+      return a ? opts.fn(this) : opts.inverse(this)
     }
   }
 }));

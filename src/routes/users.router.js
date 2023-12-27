@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { changePassController, changeRolFormController, deleteUserController, deleteUserforTestController, getUsersController, loginUserController, logoutUserController, registerUserController, resetPasswordController } from "../controllers/users.controller.js";
+import { checkUsersAuth } from "../middlewares/auth.middleware.js";
 import SessionDTO from "../dal/dto/sessions.dto.js";
 import passport from "passport";
 
@@ -7,7 +8,7 @@ const router = Router()
 
 router.get('/', getUsersController )
 
-router.post('/delete/:mail', deleteUserController)
+router.post('/delete/:mail', checkUsersAuth, deleteUserController)
 
 router.post('/register', registerUserController)
 

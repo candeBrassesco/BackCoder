@@ -2,17 +2,20 @@
 
 <button onclick="location.href='/api/views/profile'">Your profile</button>
 <button onclick="location.href='/api/users/logout'">Log out</button>
+
+{{#areEqual "admin" "premium" user.role}}
 <button onclick="location.href='/products/addProd'">Add new products</button>
+{{/areEqual}}
 
 {{#isEqual user.role "admin"}}
-    <div id="checkUsers">
-       <button onclick="location.href='/api/views/users'">Check users</button>
-    </div>
-{{else}}
-    <div id="checkUsers">
-       <button onclick="location.href='/api/views/users'" style="display:none">Check users</button>
-    </div>
+<div id="checkUsers">
+    <button onclick="location.href='/api/views/users'">Check users</button>
+</div>
 {{/isEqual}}
+
+{{#areEqual "premium" "user" user.role}}
+<button onclick="location.href='/carts/{{user.cart}}'">Go to cart</button>
+{{/areEqual}}
 
 {{#each products}}
 <form id="prodForm" action="/api/cart/{{cartId}}/product/{{id}}" method="POST">
@@ -22,10 +25,19 @@
     <p>code: {{code}}</p>
     <p>stock: {{stock}}</p>
     <p>thumbnails: {{thumbnails}}</p>
+    {{#exists owner}}
+    <p>owner: {{owner}}</p>
+    {{/exists}}
     <p id="pid">id: {{id}}</p>
     <button type="submit" id="{{id}}">Add to cart</button>
 </form>
+{{#areEqual "admin" "premium" role}}
+<form id="deleteForm" action="/api/products/{{id}}" method="POST"> 
+    <button type="submit" id="{{id}}">Delete product</button>
+</form>
+{{/areEqual}}
 {{/each}}
+
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/index.js"></script>

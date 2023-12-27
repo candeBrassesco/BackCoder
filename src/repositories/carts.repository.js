@@ -11,7 +11,7 @@ class CartsRepository {
 
     async getCarts() {
         try {
-            const carts = await cartsModel.find({}).populate('products.pid')
+            const carts = await cartsModel.find({}).populate('products.pid').lean()
             return carts
         } catch (error) {
             logger.error(error)
@@ -21,7 +21,7 @@ class CartsRepository {
 
     async getCartsById(id) {
         try {
-            const cart = await cartsModel.findById(id).populate('products').lean()
+            const cart = await cartsModel.findById(id).populate('products.pid');
             if (!cart) {
                 CostumError.createError({
                     name: ErrorName.CART_DATA_INCOMPLETE,
