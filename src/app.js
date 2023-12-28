@@ -49,6 +49,12 @@ app.engine('handlebars', handlebars.engine({
     },
     exists: function(a, opts) {
       return a ? opts.fn(this) : opts.inverse(this)
+    },
+    empty: function(a, opts) {
+      return a.length === 0 ? opts.fn(this) : opts.inverse(this)
+    },
+    full: function(a, opts) {
+      return a.length > 0 ? opts.fn(this) : opts.inverse(this)
     }
   }
 }));

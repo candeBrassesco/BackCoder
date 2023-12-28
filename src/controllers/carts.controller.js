@@ -112,8 +112,7 @@ export const viewCartControler = async ( req, res ) => {
                 quantity: product.quantity
               };
         })
-        console.log(cartProducts[0].pid)
-        console.log(productList)
+        console.log(productList) 
         res.render("cart", {products: productList})
     } catch (error) {
         res.status(500).json({error})
