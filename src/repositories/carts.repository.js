@@ -68,7 +68,7 @@ class CartsRepository {
             const updatedCart = await cartById.save()
             return updatedCart
         } catch (error) {
-            console.log(error)
+            logger.log(error)
             return error
         }
     }
@@ -101,6 +101,7 @@ class CartsRepository {
             cart.products = []
             return await cartsModel.updateOne({ _id: cid }, { $set: { products: cart.products } })
         } catch (error) {
+            logger.error(error)
             return error
         }
     }
@@ -181,7 +182,6 @@ class CartsRepository {
             }
             let total = 0
             let cartProducts = cart.products
-            console.log(cartProducts)
             let productsBought = []
             let productsNotBought = []
             for (let i = 0; i < cartProducts.length; i++) {
@@ -191,7 +191,6 @@ class CartsRepository {
                     let totalPrice = product.quantity * dbProduct.price
                     total += totalPrice
                     const newStock = dbProduct.stock - product.quantity
-                    console.log(newStock)
                     await productManager.updateProductStock(dbProduct._id, newStock)
                     productsBought.push({
                         _id: dbProduct._id,

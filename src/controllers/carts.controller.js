@@ -102,6 +102,7 @@ export const viewCartControler = async ( req, res ) => {
     const {cid} = req.params
     try {
         const cart = await cartManager.getCartsById(cid)
+        console.log(cart)
         const cartProducts = cart.products
         const productList = cartProducts.map(product => {
             return {
@@ -113,7 +114,7 @@ export const viewCartControler = async ( req, res ) => {
               };
         })
         console.log(productList) 
-        res.render("cart", {products: productList})
+        res.render("cart", {products: productList, cartId: cid})
     } catch (error) {
         res.status(500).json({error})
     }
@@ -126,7 +127,12 @@ export const purchaseCartController = async ( req, res ) => {
     try {
         const purchase = await cartManager.purchaseCart(cid, user)
         const resetCart = await cartManager.resetCart(cid)
-        res.status(200).json({message: 'Products bought', purchase})
+        const ticket = purchase.ticket
+        res.render("ticket", {
+            code: ticket.code,
+            amount: ticket.amount,
+            productsBought: purchase.productsBought
+        })
     } catch (error) {
         res.status(500).json({error})
     }

@@ -1,0 +1,15 @@
+<h2> Ticket generated</h2>
+
+<div>
+   <h3>code: {{code}}</h3>
+   <h4>amount: {{amount}}</h4>
+   <h4>products:</h4>
+   {{#each productsBought}}
+      <p>quantity: {{quantity}}</p>
+      <p>price: {{price}}</p>
+   {{/each}}
+</div>
+
+<button onclick="location.href='/products'">Buy!</button>
+
+

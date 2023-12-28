@@ -2,7 +2,7 @@
 
 {{#empty products}}
 <p>Your cart it's empty</p>
-<button onclick="location.href='/api/products'">See products</button>
+<button onclick="location.href='/products'">See products</button>
 {{/empty}}
 
 {{#full products}}
@@ -15,7 +15,7 @@
     <p>quantity: {{quantity}}</p>
 </div>
 {{/each}}
-<form id="purchaseForm" action="" method="">
+<form id="purchaseForm" action="/api/cart/{{cartId}}/purchase" method="GET">
     <button id="purchase" type="submit">Purchase cart</button>
 </form>
 {{/full}}
